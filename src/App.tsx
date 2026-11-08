@@ -389,8 +389,8 @@ export const App: React.FC = () => {
   };
 
   // Admin manual cloud DB sync
-  const handleSyncDatabase = async () => {
-    await seedInitialCatalogToFirestore(products);
+  const handleSyncDatabase = async (): Promise<void> => {
+    await seedInitialCatalogToFirestore(products, true);
   };
 
   // Admin coupon operations - Saved to Master Database permanently

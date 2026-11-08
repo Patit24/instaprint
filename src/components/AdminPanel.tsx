@@ -224,8 +224,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     try {
       await onSyncDatabase();
       triggerToast('Cloud Firestore database synced with all catalog products!');
-    } catch (e) {
-      triggerToast('Sync completed locally.');
+    } catch (e: any) {
+      console.error('Manual sync error:', e);
+      triggerToast(e?.message || 'Sync failed: check Cloud Firestore security rules in Firebase Console.');
     } finally {
       setIsSyncingDb(false);
     }

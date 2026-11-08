@@ -184,17 +184,21 @@ export const uploadProductImageToFirebase = async (
 };
 
 /**
- * Seed initial catalog to Firestore if the collection is empty
+ * Seed initial catalog to Firestore if the collection is empty or if forced
  */
-export const seedInitialCatalogToFirestore = async (defaultProducts: Product[]): Promise<boolean> => {
+export const seedInitialCatalogToFirestore = async (defaultProducts: Product[], force: boolean = false): Promise<boolean> => {
   try {
     const productsCol = collection(db, PRODUCTS_COLLECTION);
-    const q = query(productsCol, limit(1));
-    const checkSnap = await getDocs(q);
+    let shouldSeed = force;
+    if (!shouldSeed) {
+      const q = query(productsCol, limit(1));
+      const checkSnap = await getDocs(q);
+      shouldSeed = checkSnap.empty;
+    }
     
-    if (checkSnap.empty && defaultProducts.length > 0) {
-      console.log(`[Firestore] Seeding ${defaultProducts.length} initial products to Firestore...`);
-      // Use batches of 450 (Firestore limit is 500 per batch)
+    if (shouldSeed && defaultProducts.length > 0) {
+      console.log(`[Firestore] Seeding ${defaultProducts.length} products to Cloud Firestore...`);
+      // Use batches of 400 (Firestore limit is 500 per batch)
       const chunkSize = 400;
       for (let i = 0; i < defaultProducts.length; i += chunkSize) {
         const chunk = defaultProducts.slice(i, i + chunkSize);
@@ -209,9 +213,12 @@ export const seedInitialCatalogToFirestore = async (defaultProducts: Product[]):
       return true;
     }
     return false;
-  } catch (error) {
-    console.warn("[Firestore] Auto-seed failed or skipped (network/rules):", error);
-    return false;
+  } catch (error: any) {
+    console.error("[Firestore] Seed error:", error);
+    if (error?.code === 'permission-denied' || error?.message?.includes('insufficient permissions') || error?.message?.includes('PERMISSION_DENIED')) {
+      throw new Error("Firestore Permission Denied: Please open Firebase Console -> Rules tab and publish 'allow read, write: if true;'");
+    }
+    throw error;
   }
 };
 
