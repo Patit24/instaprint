@@ -15,7 +15,8 @@ import {
   Lock, 
   AlertCircle,
   Trash2,
-  FileText
+  FileText,
+  CreditCard
 } from 'lucide-react';
 import { Product, CartItem } from '../types';
 import { STORE_INFO } from '../data/products';
@@ -25,12 +26,14 @@ interface ProductDetailModalProps {
   product: Product | null;
   onClose: () => void;
   onAddToCart: (item: CartItem) => void;
+  onDirectCheckout?: (item: CartItem) => void;
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   product,
   onClose,
   onAddToCart,
+  onDirectCheckout,
 }) => {
   if (!product) return null;
 
@@ -474,27 +477,50 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
 
               <div className="space-y-2.5">
+                {/* Buy Now via Razorpay Standard Checkout */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const item: CartItem = {
+                      id: `${product.id}-${Date.now()}`,
+                      productId: product.id,
+                      name: product.name,
+                      price: currentPrice,
+                      originalPrice: product.originalPrice,
+                      quantity,
+                      image: product.image,
+                      size: selectedSize,
+                      finish: selectedFinish,
+                      customText,
+                      uploadedLogoUrl: uploadedPhotoUrl || undefined,
+                      uploadedLogoName: uploadedLogoName || undefined,
+                      customInstructions: customInstructions || undefined,
+                      isCustomized: !!(customText || uploadedPhotoUrl || customInstructions),
+                      bulkBadge: product.bulkPricingBadge
+                    };
+                    onClose();
+                    if (onDirectCheckout) {
+                      onDirectCheckout(item);
+                    } else {
+                      onAddToCart(item);
+                    }
+                  }}
+                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-brand-600 via-rose-600 to-amber-500 hover:from-brand-500 hover:to-amber-400 text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span>Buy Now with Razorpay (₹{(currentPrice * quantity).toLocaleString('en-IN')})</span>
+                </button>
+
                 {/* PRIMARY WHATSAPP ENQUIRY */}
                 <a
                   href={`https://wa.me/${STORE_INFO.whatsapp}?text=${encodeURIComponent(`Hi Instaprint Baranagar! I want to order/inquire: ${product.name} (Qty: ${quantity}, ${selectedSize || 'Standard'}). Total: ₹${(currentPrice * quantity).toLocaleString('en-IN')}. Please share sample proof.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#25D366] to-[#20bd5a] hover:from-[#20bd5a] hover:to-[#1a9f4c] text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all hover:scale-[1.01] active:scale-[0.98] border border-emerald-400"
+                  className="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-slate-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-[0.98]"
                 >
                   <MessageCircle className="w-4 h-4 fill-slate-950 text-[#25D366]" />
-                  <span>Enquire & Order on WhatsApp (₹{(currentPrice * quantity).toLocaleString('en-IN')})</span>
+                  <span>Enquire & Order on WhatsApp</span>
                 </a>
-
-                {/* DISABLED BUY NOW (RAZORPAY INTEGRATION PENDING) */}
-                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 flex items-center justify-between text-xs text-slate-700 dark:text-slate-400 shadow-sm">
-                  <span className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-300">
-                    <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                    <span>Buy Now Disabled:</span>
-                  </span>
-                  <span className="text-[10px] text-amber-900 dark:text-amber-400 font-mono font-bold bg-amber-100 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-300 dark:border-amber-500/20">
-                    Razorpay Pending
-                  </span>
-                </div>
               </div>
             </div>
 

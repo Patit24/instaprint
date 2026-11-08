@@ -310,6 +310,11 @@ export const App: React.FC = () => {
     setIsCheckoutOpen(true);
   };
 
+  const handleDirectCheckout = (item: CartItem) => {
+    setCart(prev => [item, ...prev.filter(i => i.id !== item.id)]);
+    setIsCheckoutOpen(true);
+  };
+
   const handleOrderSuccess = (newOrder: OrderRecord) => {
     setOrders(prev => [newOrder, ...prev]);
     dbSaveOrder(newOrder);
@@ -519,6 +524,7 @@ export const App: React.FC = () => {
             orders={orders}
             onBack={() => handleNavigate('shop')}
             onAddToCart={handleAddToCart}
+            onDirectCheckout={handleDirectCheckout}
             onSelectProduct={handleSelectProduct}
             onOpenCustomizer={handleOpenCustomizer}
             isWishlisted={wishlist.includes(selectedProduct.id)}

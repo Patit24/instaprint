@@ -30,7 +30,8 @@ import {
   CheckCircle2,
   Circle,
   Printer,
-  Copy
+  Copy,
+  CreditCard
 } from 'lucide-react';
 import { Product, CartItem, OrderRecord } from '../types';
 import { STORE_INFO, SAMPLE_PRODUCTS } from '../data/products';
@@ -43,6 +44,7 @@ interface ProductDetailPageProps {
   orders?: OrderRecord[];
   onBack: () => void;
   onAddToCart: (item: CartItem) => void;
+  onDirectCheckout?: (item: CartItem) => void;
   onSelectProduct: (product: Product) => void;
   onOpenCustomizer?: (product: Product) => void;
   isWishlisted: boolean;
@@ -55,6 +57,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   orders,
   onBack,
   onAddToCart,
+  onDirectCheckout,
   onSelectProduct,
   onOpenCustomizer,
   isWishlisted,
@@ -422,6 +425,36 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     onAddToCart(item);
     setAddedSuccess(true);
     setTimeout(() => setAddedSuccess(false), 1500);
+  };
+
+  const handleBuyNowRazorpay = () => {
+    const isCustomized = Boolean(customLogo || customText.trim() || customInstructions.trim() || audioUrl);
+    const item: CartItem = {
+      id: `${product.id}-${Date.now()}`,
+      productId: product.id,
+      name: product.name,
+      price: currentUnitPrice,
+      originalPrice: baseUnitMrp,
+      quantity,
+      image: activeImage || product.image,
+      size: selectedSize || undefined,
+      finish: selectedFinish || undefined,
+      customText: customText.trim() || undefined,
+      uploadedLogoUrl: customLogo || undefined,
+      uploadedLogoName: customLogoName || undefined,
+      customInstructions: [
+        customInstructions.trim(),
+        audioUrl ? `[Voice Note: ${recordingSeconds}s recorded]` : ''
+      ].filter(Boolean).join(' • ') || undefined,
+      isCustomized,
+      bulkBadge: product.bulkPricingBadge
+    };
+
+    if (onDirectCheckout) {
+      onDirectCheckout(item);
+    } else {
+      onAddToCart(item);
+    }
   };
 
   // Related products in the same category
@@ -990,54 +1023,46 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             )}
 
-            {/* Notice Banner: Razorpay Integration Pending & WhatsApp Active */}
+            {/* Notice Banner: Razorpay Checkout Active & WhatsApp Support */}
             <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-300 dark:border-emerald-500/40 text-emerald-950 dark:text-emerald-200 text-xs flex items-center justify-between gap-3 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-emerald-600 dark:bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm">
-                  <MessageCircle className="w-4 h-4 fill-white text-emerald-600" />
+                  <CreditCard className="w-4 h-4 text-white" />
                 </div>
                 <span className="leading-relaxed text-[11.5px] text-emerald-950 dark:text-emerald-100">
-                  <strong className="text-emerald-900 dark:text-emerald-300 font-extrabold">Direct WhatsApp Ordering Active:</strong> Online Buy Now is temporarily paused pending Razorpay gateway integration. Please contact through WhatsApp Enquiry below!
+                  <strong className="text-emerald-900 dark:text-emerald-300 font-extrabold">Razorpay Standard Checkout Active:</strong> Instant online checkout via Cards, UPI, NetBanking & Wallets. You can also enquire on WhatsApp below!
                 </span>
               </div>
-              <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase bg-amber-200/80 dark:bg-amber-500/20 text-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30 shrink-0 hidden sm:inline-block">
-                Razorpay Pending
+              <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase bg-emerald-200/80 dark:bg-emerald-500/20 text-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30 shrink-0 hidden sm:inline-block">
+                Razorpay Active
               </span>
             </div>
 
-            {/* Main Action Strip: WHATSAPP ENQUIRY (PRIMARY) & DISABLED BUY NOW */}
+            {/* Main Action Strip: BUY NOW WITH RAZORPAY & WHATSAPP ENQUIRY */}
             <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-3">
-              {/* PRIMARY HERO CTA: ENQUIRE & ORDER ON WHATSAPP */}
+              {/* PRIMARY HERO CTA: BUY NOW WITH RAZORPAY */}
+              <button
+                type="button"
+                onClick={handleBuyNowRazorpay}
+                className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-brand-600 via-rose-600 to-amber-500 hover:from-brand-500 hover:to-amber-400 text-white font-extrabold text-sm uppercase tracking-wider shadow-xl shadow-rose-600/25 flex items-center justify-center gap-2.5 hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <CreditCard className="w-5 h-5 text-white" />
+                <span>Buy Now with Razorpay (₹{totalPay.toLocaleString('en-IN')})</span>
+              </button>
+
+              {/* SECONDARY CTA: ENQUIRE & ORDER ON WHATSAPP */}
               <a
                 href={getWhatsAppInquiryUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-[#25D366] via-[#22c35e] to-[#20bd5a] hover:from-[#20bd5a] hover:to-[#1a9f4c] text-slate-950 font-black text-sm uppercase tracking-wider shadow-xl shadow-emerald-600/25 flex items-center justify-center gap-2.5 hover:scale-[1.01] active:scale-[0.98] transition-all group cursor-pointer border border-emerald-400"
+                className="w-full py-3.5 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-slate-950 font-black text-xs uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer border border-emerald-400"
               >
-                <MessageCircle className="w-5 h-5 fill-slate-950 text-[#25D366] group-hover:scale-110 transition-transform" />
-                <span>Enquire & Order on WhatsApp (₹{totalPay.toLocaleString('en-IN')})</span>
+                <MessageCircle className="w-4.5 h-4.5 fill-slate-950 text-[#25D366]" />
+                <span>Or Enquire & Order on WhatsApp</span>
               </a>
 
-              {/* DISABLED BUY NOW BUTTON UNTIL RAZORPAY INTEGRATION */}
-              <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs shadow-sm">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-transparent flex items-center justify-center shrink-0 shadow-sm">
-                    <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-slate-900 dark:text-slate-200 block text-xs">Buy Now Option Disabled</span>
-                    <span className="text-[11px] text-slate-600 dark:text-slate-400">
-                      Razorpay payment gateway integration in progress • Please contact through WhatsApp
-                    </span>
-                  </div>
-                </div>
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-500/10 text-amber-900 dark:text-amber-400 border border-amber-300 dark:border-amber-500/20 shrink-0">
-                  Razorpay In Progress
-                </span>
-              </div>
-
               <p className="text-center text-[11px] text-slate-600 dark:text-slate-400">
-                💬 Need quick quotation, design proof or custom sizing? Click <strong className="text-emerald-600 dark:text-emerald-400 font-bold">Enquire & Order on WhatsApp</strong> for instant 5-minute response!
+                🔒 256-Bit SSL Encrypted Standard Checkout powered by Razorpay India. Need custom quotation? Click <strong className="text-emerald-600 dark:text-emerald-400 font-bold">Enquire on WhatsApp</strong>!
               </p>
             </div>
 
@@ -1073,10 +1098,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
-                  <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-amber-900 dark:text-amber-400 bg-amber-100 dark:bg-amber-500/10 px-2.5 py-1.5 rounded-xl border border-amber-300 dark:border-amber-500/20 font-mono font-bold">
-                    <Lock className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-                    <span>Buy Paused (Razorpay Pending)</span>
-                  </span>
+                  <button
+                    type="button"
+                    onClick={handleBuyNowRazorpay}
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-rose-600 hover:from-brand-500 hover:to-rose-500 text-white font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-rose-950/40 transition-all hover:scale-[1.02] cursor-pointer"
+                  >
+                    <CreditCard className="w-4 h-4 text-white" />
+                    <span>Buy Now (₹{totalPay.toLocaleString('en-IN')})</span>
+                  </button>
 
                   <a
                     href={getWhatsAppInquiryUrl()}

@@ -190,8 +190,11 @@ export interface OrderRecord {
   discount: number;
   shipping: number;
   total: number;
-  paymentMethod: 'upi-qr' | 'card' | 'cod-pickup' | 'whatsapp';
+  paymentMethod: 'razorpay' | 'upi-qr' | 'card' | 'cod-pickup' | 'whatsapp';
   paymentStatus: 'paid' | 'pending-verification' | 'pay-at-shop';
+  razorpayPaymentId?: string;
+  razorpayOrderId?: string;
+  razorpaySignature?: string;
   orderStatus: 'received' | 'artwork-review' | 'printing' | 'qc-packed' | 'dispatched' | 'delivered' | 'cancelled';
   trackingNumber: string;
 }

@@ -15,11 +15,15 @@ import {
   Download, 
   Copy,
   Printer,
-  Lock
+  Lock,
+  AlertCircle,
+  Loader2,
+  Sparkles
 } from 'lucide-react';
 import { CartItem, OrderRecord } from '../types';
 import { STORE_INFO } from '../data/products';
 import { dbSaveOrder } from '../services/db';
+import { openRazorpayCheckout } from '../services/razorpay';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -53,11 +57,16 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [city, setCity] = useState('Kolkata');
   const [specialNote, setSpecialNote] = useState('');
 
-  // Payment Selection
-  const [paymentMethod, setPaymentMethod] = useState<'upi-qr' | 'cod-pickup' | 'whatsapp'>('upi-qr');
+  // Payment Selection (Razorpay is the default primary online checkout)
+  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'upi-qr' | 'cod-pickup' | 'whatsapp'>('razorpay');
   const [utrNumber, setUtrNumber] = useState('');
   const [confirmedOrder, setConfirmedOrder] = useState<OrderRecord | null>(null);
   const [copiedUpi, setCopiedUpi] = useState(false);
+
+  // Razorpay Processing & Error States
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentNotice, setPaymentNotice] = useState<string | null>(null);
 
   // Financials
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -73,7 +82,104 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setStep('payment');
   };
 
+  /**
+   * Razorpay Standard Web Checkout Execution
+   * Calls /api/create-order -> opens Razorpay modal -> calls /api/verify-payment -> marks order as paid
+   */
+  const handleRazorpayPayment = () => {
+    setIsProcessingPayment(true);
+    setPaymentError(null);
+    setPaymentNotice(null);
+
+    const receipt = `rcpt_${Date.now()}`;
+
+    openRazorpayCheckout({
+      amountInRupees: grandTotal,
+      receipt,
+      customerName: fullName,
+      customerEmail: email || 'customer@instaprintkolkata.com',
+      customerPhone: phone,
+      description: `Instaprint Order ${receipt} • ${cart.length} item(s)`,
+      onSuccess: (payment) => {
+        setIsProcessingPayment(false);
+
+        const newOrderId = `IP-KOL-${Math.floor(10000 + Math.random() * 90000)}`;
+        const newOrder: OrderRecord = {
+          orderId: newOrderId,
+          createdAt: new Date().toLocaleDateString('en-IN', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          }),
+          customer: {
+            fullName,
+            phone,
+            email: email || 'customer@instaprint.com',
+            deliveryMethod,
+            addressLine1: addressLine,
+            landmark,
+            pincode,
+            city,
+            state: 'West Bengal',
+            specialInstructions: specialNote
+          },
+          items: [...cart],
+          subtotal,
+          discount,
+          shipping: shippingFee,
+          total: grandTotal,
+          paymentMethod: 'razorpay',
+          paymentStatus: 'paid',
+          razorpayPaymentId: payment.razorpay_payment_id,
+          razorpayOrderId: payment.razorpay_order_id,
+          razorpaySignature: payment.razorpay_signature,
+          orderStatus: 'received',
+          trackingNumber: `TRACK-${Math.floor(100000 + Math.random() * 900000)}`
+        };
+
+        // Save permanently to Database (IndexedDB & Cloud Firestore)
+        dbSaveOrder(newOrder);
+
+        // Backup to localStorage for legacy recovery
+        try {
+          const existing = JSON.parse(localStorage.getItem('instaprint_orders') || '[]');
+          existing.unshift(newOrder);
+          localStorage.setItem('instaprint_orders', JSON.stringify(existing));
+        } catch (e) {
+          console.error(e);
+        }
+
+        setConfirmedOrder(newOrder);
+        setStep('confirmed');
+        onOrderSuccess(newOrder);
+
+        // Confetti celebration
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#f43f5e', '#f59e0b', '#10b981', '#38bdf8']
+        });
+      },
+      onError: (errorMessage) => {
+        setIsProcessingPayment(false);
+        setPaymentError(errorMessage);
+      },
+      onDismiss: () => {
+        setIsProcessingPayment(false);
+        setPaymentNotice('Payment window was closed. You can retry payment whenever you are ready.');
+      }
+    });
+  };
+
   const handlePlaceOrder = () => {
+    if (paymentMethod === 'razorpay') {
+      handleRazorpayPayment();
+      return;
+    }
+
     const newOrderId = `IP-KOL-${Math.floor(10000 + Math.random() * 90000)}`;
     const newOrder: OrderRecord = {
       orderId: newOrderId,
@@ -356,18 +462,65 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </span>
               </div>
 
-              {/* Razorpay Gateway Notice */}
-              <div className="p-3 rounded-xl bg-amber-950/30 border border-amber-500/30 text-amber-300 text-xs flex items-center justify-between gap-2">
-                <span className="flex items-center gap-1.5 font-medium">
-                  <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>Razorpay Payment Gateway integration in progress.</span>
-                </span>
-                <span className="text-[10px] text-slate-400">UPI QR & WhatsApp active</span>
-              </div>
+              {/* Payment Error / Notice Banners */}
+              {paymentError && (
+                <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/50 text-rose-200 text-xs flex items-start gap-2.5 shadow-sm">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="font-bold block text-rose-100">Payment Unsuccessful</strong>
+                    <span>{paymentError}</span>
+                  </div>
+                </div>
+              )}
+
+              {paymentNotice && !paymentError && (
+                <div className="p-3 rounded-xl bg-amber-950/30 border border-amber-500/40 text-amber-200 text-xs flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>{paymentNotice}</span>
+                </div>
+              )}
 
               {/* Payment Methods */}
               <div className="space-y-3">
-                {/* Method 1: UPI QR */}
+                {/* Method 1: Razorpay Standard Web Checkout (Featured Online Method) */}
+                <div
+                  onClick={() => {
+                    setPaymentMethod('razorpay');
+                    setPaymentError(null);
+                  }}
+                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                    paymentMethod === 'razorpay'
+                      ? 'bg-gradient-to-br from-slate-900 to-[#141828] border-2 border-brand-500 text-white shadow-glow-rose'
+                      : 'bg-[#141824] border-slate-800 text-slate-300 hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2 font-bold text-xs">
+                      <CreditCard className="w-4 h-4 text-brand-400" />
+                      <span>Razorpay Standard Web Checkout</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-brand-300 bg-brand-500/20 px-2 py-0.5 rounded border border-brand-500/30 uppercase tracking-wider flex items-center gap-1">
+                      <Sparkles className="w-2.5 h-2.5 text-brand-400" /> Recommended
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 pl-6 leading-relaxed">
+                    Instant online payment via <strong>Credit / Debit Cards, UPI (GPay, PhonePe, Paytm), NetBanking (50+ banks) & Wallets</strong>. 256-bit bank-grade encryption.
+                  </p>
+
+                  {paymentMethod === 'razorpay' && (
+                    <div className="mt-3.5 pt-3 border-t border-slate-700/80 flex items-center justify-between text-[11px]">
+                      <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        <span>Powered by Razorpay India (Test Gateway Active)</span>
+                      </span>
+                      <span className="text-slate-400 font-mono text-[10px]">
+                        rzp_test_...
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Method 2: UPI QR */}
                 <div
                   onClick={() => setPaymentMethod('upi-qr')}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all ${
@@ -379,7 +532,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2 font-bold text-xs">
                       <QrCode className="w-4 h-4 text-emerald-400" />
-                      <span>Instant UPI QR Scan & Pay (GPay, PhonePe, Paytm)</span>
+                      <span>Direct Store UPI QR Scan & Pay</span>
                     </div>
                     <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded">
                       Zero Surcharge
@@ -440,7 +593,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   )}
                 </div>
 
-                {/* Method 2: Pay at Store / COD */}
+                {/* Method 3: Pay at Store / COD */}
                 <div
                   onClick={() => setPaymentMethod('cod-pickup')}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all ${
@@ -458,7 +611,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </p>
                 </div>
 
-                {/* Method 3: Direct WhatsApp Confirmation */}
+                {/* Method 4: Direct WhatsApp Confirmation */}
                 <div
                   onClick={() => setPaymentMethod('whatsapp')}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all ${
@@ -482,18 +635,40 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setStep('details')}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700"
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700 cursor-pointer"
                 >
                   ← Back
                 </button>
 
-                <button
-                  onClick={handlePlaceOrder}
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs shadow-lg hover:scale-[1.02] transition-transform flex items-center gap-2"
-                >
-                  <Check className="w-4 h-4" />
-                  <span>Confirm Order (₹{grandTotal.toLocaleString('en-IN')})</span>
-                </button>
+                {paymentMethod === 'razorpay' ? (
+                  <button
+                    type="button"
+                    disabled={isProcessingPayment}
+                    onClick={handleRazorpayPayment}
+                    className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 via-rose-600 to-amber-500 hover:from-brand-500 hover:to-amber-400 text-white font-extrabold text-xs shadow-glow-rose hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
+                  >
+                    {isProcessingPayment ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Launching Razorpay...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-4 h-4" />
+                        <span>Pay with Razorpay (₹{grandTotal.toLocaleString('en-IN')})</span>
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handlePlaceOrder}
+                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs shadow-lg hover:scale-[1.02] transition-transform flex items-center gap-2 cursor-pointer"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Confirm Order (₹{grandTotal.toLocaleString('en-IN')})</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -522,10 +697,28 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <p className="font-mono font-black text-amber-400 text-base">{confirmedOrder.orderId}</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-slate-400">Status:</span>
-                    <p className="text-emerald-400 font-bold">Artwork Verification Queued</p>
+                    <span className="text-slate-400">Payment Status:</span>
+                    {confirmedOrder.paymentStatus === 'paid' ? (
+                      <p className="text-emerald-400 font-bold flex items-center justify-end gap-1">
+                        <Check className="w-3.5 h-3.5" /> Paid Online (Verified)
+                      </p>
+                    ) : (
+                      <p className="text-amber-400 font-bold">Artwork Verification Queued</p>
+                    )}
                   </div>
                 </div>
+
+                {confirmedOrder.razorpayPaymentId && (
+                  <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
+                    <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                      <CreditCard className="w-3.5 h-3.5 text-brand-400" />
+                      <span>Razorpay Payment ID:</span>
+                    </span>
+                    <code className="text-emerald-400 font-mono font-bold">
+                      {confirmedOrder.razorpayPaymentId}
+                    </code>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-2 text-xs text-slate-300">
                   <div>

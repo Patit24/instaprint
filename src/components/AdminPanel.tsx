@@ -772,6 +772,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <span className="text-[11px] text-slate-400">Total Charged:</span>
                         <p className="text-lg font-black text-amber-400 font-mono">₹{order.total}</p>
                         <span className="text-[10px] text-emerald-400 font-bold uppercase">{order.paymentStatus} ({order.paymentMethod})</span>
+                        {order.razorpayPaymentId && (
+                          <span className="text-[10px] text-amber-300 font-mono block">
+                            RPay ID: {order.razorpayPaymentId}
+                          </span>
+                        )}
                       </div>
 
                       <button
