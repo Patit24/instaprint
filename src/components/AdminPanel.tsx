@@ -339,11 +339,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <div className="w-full max-w-md bg-[#0e121e] border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 animate-fadeIn">
           
           <div className="text-center space-y-3">
-            <div className="bg-white/95 px-4 py-2 rounded-2xl border border-white/30 shadow-lg mx-auto inline-block">
+            <div className="mx-auto inline-block py-2">
               <img
                 src="/logo.png"
                 alt="Instaprint Logo"
-                className="h-9 w-auto object-contain mx-auto"
+                className="h-10 w-auto object-contain mx-auto"
               />
             </div>
             <h2 className="text-2xl font-black text-white tracking-tight">
@@ -476,13 +476,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* Admin Top Header */}
       <header className="sticky top-0 z-40 bg-[#0c0f18]/95 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="bg-white/95 px-2.5 py-1 rounded-xl shadow-sm border border-white/20">
-            <img
-              src="/logo.png"
-              alt="Instaprint Logo"
-              className="h-7 w-auto object-contain"
-            />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Instaprint Logo"
+            className="h-8 w-auto object-contain"
+          />
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-extrabold text-base text-white tracking-tight">Command Center</h1>

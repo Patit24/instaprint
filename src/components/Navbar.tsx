@@ -233,19 +233,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           
-          {/* Brand Logo */}
+          {/* Brand Logo - 100% Transparent Background */}
           <div 
-            className="flex items-center gap-3 cursor-pointer select-none group" 
+            className="flex items-center gap-3 cursor-pointer select-none group py-1" 
             onClick={() => onNavigate('home')}
           >
-            {/* Official Instaprint Logo */}
-            <div className="bg-white/95 hover:bg-white px-2.5 sm:px-3 py-1.5 rounded-2xl shadow-md border border-white/30 transition-all group-hover:scale-[1.02]">
-              <img
-                src="/logo.png"
-                alt="Instaprint - Best Printing. Best Price."
-                className="h-7 sm:h-9 w-auto object-contain"
-              />
-            </div>
+            <img
+              src={theme === 'light' ? '/logo-red.png' : '/logo.png'}
+              alt="Instaprint - Best Printing. Best Price."
+              className="h-8 sm:h-10 md:h-11 w-auto object-contain transition-transform group-hover:scale-[1.03]"
+            />
 
             <div className="hidden xl:block">
               <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30">

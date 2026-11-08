@@ -141,13 +141,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Top Header */}
         <div className="px-6 py-4 border-b border-slate-800 bg-[#090b10] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="bg-white/95 px-2 py-1 rounded-xl shadow-sm border border-white/20">
-              <img
-                src="/logo.png"
-                alt="Instaprint Logo"
-                className="h-6 w-auto object-contain"
-              />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Instaprint Logo"
+              className="h-7 w-auto object-contain"
+            />
             <div>
               <h3 className="font-extrabold text-base text-white">
                 {step === 'details' && 'Shipping & Contact Details'}

@@ -415,7 +415,7 @@ export const GuestOrderHub: React.FC<GuestOrderHubProps> = ({
             <div className="flex items-center justify-between border-b pb-4">
               <div className="flex items-center gap-3">
                 <img
-                  src="/logo.png"
+                  src="/logo-red.png"
                   alt="Instaprint"
                   className="h-8 w-auto object-contain"
                 />
