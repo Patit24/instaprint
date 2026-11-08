@@ -151,10 +151,23 @@ export const dbGetAllProducts = async (): Promise<Product[]> => {
       return SAMPLE_PRODUCTS;
     }
 
-    // Merge with any new base products if new items were added in code
+    // Merge with base catalog, preserving admin custom edits/uploads while upgrading empty images
     const productMap = new Map<string, Product>();
     SAMPLE_PRODUCTS.forEach(p => productMap.set(p.id, p));
-    localProducts.forEach(p => productMap.set(p.id, p)); // Local modifications/uploads take precedence
+
+    localProducts.forEach(localProd => {
+      const sample = productMap.get(localProd.id);
+      // If local product has a non-empty custom image (e.g. admin uploaded base64 or custom URL)
+      const hasCustomImage = localProd.image && localProd.image.trim() !== '' && !localProd.image.includes('placeholder-empty');
+      const effectiveImage = hasCustomImage ? localProd.image : (sample?.image || localProd.image);
+
+      productMap.set(localProd.id, {
+        ...(sample || {}),
+        ...localProd,
+        image: effectiveImage,
+        gallery: (localProd.gallery && localProd.gallery.length > 0) ? localProd.gallery : (sample?.gallery || [effectiveImage])
+      });
+    });
 
     return Array.from(productMap.values());
   } catch (error) {

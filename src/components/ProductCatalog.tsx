@@ -281,33 +281,34 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <div
                 key={product.id}
                 onClick={() => onSelectProduct(product)}
-                className="w-64 sm:w-72 shrink-0 bg-[#121622] rounded-2xl border border-slate-800 hover:border-slate-700 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl cursor-pointer group"
+                className="w-64 sm:w-72 shrink-0 bg-white dark:bg-[#121622] rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-brand-500/50 dark:hover:border-slate-700 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl shadow-sm cursor-pointer group"
               >
-                {/* Top Image & Vistaprint-Style Badge */}
-                <div className="relative aspect-[4/3] w-full bg-slate-900 overflow-hidden">
+                {/* Top Image & Studio Badge */}
+                <div className="relative aspect-[4/3] w-full bg-slate-100 dark:bg-slate-900/60 overflow-hidden">
                   {hasProductImage(product) ? (
                     <img
                       src={product.image}
                       alt={product.name}
+                      loading="lazy"
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0c0f17] via-[#121624] to-[#0a0d14] p-4 text-center select-none group-hover:scale-105 transition-transform duration-500">
-                      <div className="w-11 h-11 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-amber-400 mb-1.5 shadow-inner">
-                        <Camera className="w-5 h-5 text-amber-400" />
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-[#0f1420] p-4 text-center select-none group-hover:scale-105 transition-transform duration-500">
+                      <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-2">
+                        <Camera className="w-6 h-6 text-slate-400 dark:text-slate-500" />
                       </div>
-                      <span className="text-xs font-bold text-slate-200">Photo Pending</span>
-                      <span className="text-[10px] text-slate-500 mt-0.5">Admin image upload needed</span>
+                      <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{product.name}</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">Custom Print • Baranagar</span>
                     </div>
                   )}
 
                   {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#121622] via-transparent to-black/30 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 
-                  {/* Vistaprint-Style Pricing Badge (e.g. BUY 100 @ Rs. 200) */}
+                  {/* Modern Studio Pricing Badge */}
                   <div className="absolute top-2.5 left-2.5 z-10">
-                    <span className="px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-tight bg-sky-500 text-slate-950 shadow-md border border-sky-300 font-mono">
-                      {product.bulkPricingBadge || `BUY 1 @ Rs. ${product.price}`}
+                    <span className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-950/85 text-white dark:bg-black/85 backdrop-blur-md shadow-md border border-white/10 tracking-tight">
+                      {product.bulkPricingBadge || `From ₹${product.price}`}
                     </span>
                   </div>
 
@@ -318,8 +319,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                         <Clock className="w-2.5 h-2.5" />
                         <span>Awaiting Photo</span>
                       </span>
+                    ) : product.badge === 'NEW' || product.tag === 'New Addition' ? (
+                      <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-600 text-white shadow-sm uppercase tracking-wider">
+                        NEW
+                      </span>
                     ) : product.tag ? (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-black/75 backdrop-blur-md text-amber-300 border border-white/10">
+                      <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-950/80 backdrop-blur-md text-amber-300 border border-white/10 shadow-sm">
                         {product.tag}
                       </span>
                     ) : null}
@@ -327,7 +332,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
 
                   {/* Turnaround in studio */}
                   <div className="absolute bottom-2 left-2.5 z-10">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-black/75 backdrop-blur-md text-emerald-400 border border-white/10">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-950/80 dark:bg-black/75 backdrop-blur-md text-emerald-400 border border-emerald-500/20 shadow-sm">
                       <Clock className="w-3 h-3 text-emerald-400" />
                       {product.turnaround}
                     </span>
@@ -337,22 +342,22 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 {/* Details */}
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                   <div>
-                    <h4 className="font-extrabold text-white text-sm line-clamp-1 group-hover:text-brand-400 transition-colors">
+                    <h4 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-1 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
                       {product.name}
                     </h4>
-                    <p className="text-xs text-slate-400 line-clamp-2 mt-1 leading-relaxed">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-relaxed">
                       {product.shortDescription}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
                     <div>
-                      <span className="text-[10px] text-slate-400 block font-mono">Base Price:</span>
+                      <span className="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-semibold block">Base Price:</span>
                       <div className="flex items-baseline gap-1.5">
-                        <span className="text-sm font-black text-amber-400 font-mono">
+                        <span className="text-base font-black text-slate-900 dark:text-amber-400 font-mono">
                           ₹{product.price.toLocaleString('en-IN')}
                         </span>
-                        <span className="text-[11px] text-slate-500 line-through">
+                        <span className="text-xs text-slate-400 line-through font-mono">
                           ₹{product.originalPrice.toLocaleString('en-IN')}
                         </span>
                       </div>
@@ -364,11 +369,11 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="px-2 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900 text-emerald-400 hover:text-emerald-300 border border-emerald-500/40 hover:border-emerald-500 transition-all flex items-center gap-1 text-[11px] font-bold shadow-sm"
-                        title="Enquire at WhatsApp"
+                        className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white transition-all flex items-center gap-1.5 text-xs font-bold shadow-sm shadow-emerald-600/20 active:scale-95 cursor-pointer"
+                        title="Enquire on WhatsApp"
                       >
-                        <MessageCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span className="hidden sm:inline">Enquire</span>
+                        <MessageCircle className="w-3.5 h-3.5 text-white shrink-0" />
+                        <span>Enquire</span>
                       </a>
 
                       <button
@@ -376,10 +381,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                           e.stopPropagation();
                           onSelectProduct(product);
                         }}
-                        className="px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700/80 transition-all flex items-center gap-1 shadow-sm cursor-pointer"
-                        title="View product specifications, quantity calculator & real-time tracking"
+                        className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition-all flex items-center gap-1 shadow-sm active:scale-95 cursor-pointer"
+                        title="View product details & calculate pricing"
                       >
-                        <Eye className="w-3.5 h-3.5 text-amber-400" />
+                        <Eye className="w-3.5 h-3.5 text-slate-500 dark:text-amber-400" />
                         <span>View</span>
                       </button>
                     </div>
@@ -682,33 +687,34 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                     <div
                       key={product.id}
                       onClick={() => onSelectProduct(product)}
-                      className="group relative bg-[#121622] rounded-2xl border border-slate-800 hover:border-slate-700 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
+                      className="group relative bg-white dark:bg-[#121622] rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-brand-500/50 dark:hover:border-slate-700 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl shadow-sm cursor-pointer"
                     >
                       {/* Top Image Container */}
-                      <div className="relative aspect-[4/3] w-full bg-slate-900 overflow-hidden">
+                      <div className="relative aspect-[4/3] w-full bg-slate-100 dark:bg-slate-900/60 overflow-hidden">
                         {hasProductImage(product) ? (
                           <img
                             src={product.image}
                             alt={product.name}
+                            loading="lazy"
                             className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                           />
                         ) : (
-                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#0c0f17] via-[#121624] to-[#0a0d14] p-4 text-center select-none group-hover:scale-105 transition-transform duration-500">
-                            <div className="w-12 h-12 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-amber-400 mb-1.5 shadow-inner">
-                              <Camera className="w-6 h-6 text-amber-400" />
+                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-[#0f1420] p-4 text-center select-none group-hover:scale-105 transition-transform duration-500">
+                            <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-2">
+                              <Camera className="w-6 h-6 text-slate-400 dark:text-slate-500" />
                             </div>
-                            <span className="text-xs font-bold text-slate-200">Photo Pending</span>
-                            <span className="text-[10px] text-slate-500 mt-0.5">Admin photo upload needed</span>
+                            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{product.name}</span>
+                            <span className="text-[10px] text-slate-500 mt-0.5">Custom Print • Baranagar</span>
                           </div>
                         )}
 
                         {/* Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#121622] via-transparent to-black/30 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
 
-                        {/* Vistaprint-Style Badge */}
+                        {/* Modern Studio Pricing Badge */}
                         <div className="absolute top-2.5 left-2.5 z-10">
-                          <span className="px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-tight bg-sky-500 text-slate-950 shadow-md border border-sky-300 font-mono">
-                            {product.bulkPricingBadge || `BUY 1 @ Rs. ${product.price}`}
+                          <span className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-950/85 text-white dark:bg-black/85 backdrop-blur-md shadow-md border border-white/10 tracking-tight">
+                            {product.bulkPricingBadge || `From ₹${product.price}`}
                           </span>
                         </div>
 
@@ -719,15 +725,19 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                               <Clock className="w-2.5 h-2.5" />
                               <span>Awaiting Photo</span>
                             </span>
+                          ) : product.badge === 'NEW' || product.tag === 'New Addition' ? (
+                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-rose-600 text-white shadow-sm uppercase tracking-wider">
+                              NEW
+                            </span>
                           ) : product.tag ? (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-black/75 backdrop-blur-md text-amber-300 border border-white/10">
+                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-950/80 backdrop-blur-md text-amber-300 border border-white/10 shadow-sm">
                               {product.tag}
                             </span>
                           ) : null}
                         </div>
 
                         <div className="absolute bottom-2 left-2.5 z-10">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-black/75 backdrop-blur-md text-emerald-400 border border-white/10">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-950/80 dark:bg-black/75 backdrop-blur-md text-emerald-400 border border-emerald-500/20 shadow-sm">
                             <Clock className="w-3 h-3 text-emerald-400" />
                             {product.turnaround}
                           </span>
@@ -738,31 +748,31 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                       <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                         <div>
                           <div className="flex items-center justify-between text-xs mb-1.5">
-                            <div className="flex items-center gap-1 text-amber-400">
-                              <Star className="w-3.5 h-3.5 fill-amber-400" />
-                              <span className="font-bold text-white text-xs">{product.rating}</span>
+                            <div className="flex items-center gap-1 text-amber-500">
+                              <Star className="w-3.5 h-3.5 fill-amber-500" />
+                              <span className="font-bold text-slate-800 dark:text-white text-xs">{product.rating}</span>
                               <span className="text-slate-400 text-[11px]">({product.reviewsCount})</span>
                             </div>
                             <span className="text-[11px] text-slate-400 font-mono">Baranagar Studio</span>
                           </div>
 
-                          <h3 className="font-extrabold text-white text-sm line-clamp-1 group-hover:text-brand-400 transition-colors">
+                          <h3 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-1 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
                             {product.name}
                           </h3>
 
-                          <p className="text-xs text-slate-400 line-clamp-2 mt-1 leading-relaxed">
+                          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-relaxed">
                             {product.shortDescription}
                           </p>
                         </div>
 
-                        <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
                           <div>
-                            <span className="text-[10px] text-slate-400 font-mono block">Base Price:</span>
+                            <span className="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-semibold block">Base Price:</span>
                             <div className="flex items-baseline gap-1.5">
-                              <span className="text-base font-extrabold text-white font-mono">
+                              <span className="text-base font-black text-slate-900 dark:text-amber-400 font-mono">
                                 ₹{product.price.toLocaleString('en-IN')}
                               </span>
-                              <span className="text-xs text-slate-500 line-through">
+                              <span className="text-xs text-slate-400 line-through font-mono">
                                 ₹{product.originalPrice.toLocaleString('en-IN')}
                               </span>
                             </div>
@@ -774,24 +784,24 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="px-2 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900 text-emerald-400 hover:text-emerald-300 border border-emerald-500/40 hover:border-emerald-500 transition-all flex items-center gap-1 text-[11px] font-bold shadow-sm"
-                              title="Enquire at WhatsApp"
+                              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white transition-all flex items-center gap-1.5 text-xs font-bold shadow-sm shadow-emerald-600/20 active:scale-95 cursor-pointer"
+                              title="Enquire on WhatsApp"
                             >
-                              <MessageCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                              <span className="hidden sm:inline">Enquire</span>
+                              <MessageCircle className="w-3.5 h-3.5 text-white shrink-0" />
+                              <span>Enquire</span>
                             </a>
 
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onSelectProduct(product);
-                                }}
-                                className="px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700/80 transition-all flex items-center gap-1 shadow-sm cursor-pointer"
-                                title="View product specifications, quantity calculator & real-time tracking"
-                              >
-                                <Eye className="w-3.5 h-3.5 text-amber-400" />
-                                <span>View</span>
-                              </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onSelectProduct(product);
+                              }}
+                              className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700/80 transition-all flex items-center gap-1 shadow-sm active:scale-95 cursor-pointer"
+                              title="View product details & calculate pricing"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-slate-500 dark:text-amber-400" />
+                              <span>View</span>
+                            </button>
                           </div>
                         </div>
                       </div>

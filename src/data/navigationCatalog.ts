@@ -979,7 +979,171 @@ const getSuggestedPrice = (name: string, cat: ProductCategory): { price: number;
   return { price: 299, original: 499, minQty: 1, unitLabel: '1 Unit' };
 };
 
-// Generate all products WITHOUT images for all items in the mega menu
+/**
+ * Curated high-resolution studio photography for print products
+ * Provides authentic, crisp commercial imagery across all categories
+ */
+export const getCuratedProductImage = (name: string, category: ProductCategory, subCategory?: string): string => {
+  const n = name.toLowerCase();
+  const sub = (subCategory || '').toLowerCase();
+
+  // 1. VISITING CARDS
+  if (category === 'visiting-cards') {
+    if (n.includes('square')) {
+      return 'https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('round')) {
+      return 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('classic')) {
+      return 'https://images.unsplash.com/photo-1593062096033-9a26b09da705?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('spot uv') || n.includes('raised foil') || n.includes('brilliant') || n.includes('gold')) {
+      return 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('kraft') || n.includes('recycled') || n.includes('pearl') || n.includes('diamond')) {
+      return 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('holder') || n.includes('case')) {
+      return 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('qr') || n.includes('digital')) {
+      return 'https://images.unsplash.com/photo-1595079672139-548c02559228?auto=format&fit=crop&w=800&q=80';
+    }
+    // Default visiting card
+    return 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // 2. STATIONERY & NOTEBOOKS
+  if (category === 'stationery-notebooks' || category === 'letterheads-envelopes' || category === 'bill-books') {
+    if (n.includes('letterhead')) {
+      return 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('bill') || n.includes('invoice') || n.includes('cash') || n.includes('challan')) {
+      return 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('envelope')) {
+      return 'https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('diary') || n.includes('notebook') || n.includes('journal')) {
+      return 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('folder') || n.includes('file')) {
+      return 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80';
+    }
+    return 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // 3. CALENDARS & DIARIES
+  if (category === 'calendars-diaries' || category === 'calendars' || category === 'diaries-notebooks') {
+    if (n.includes('desk') || n.includes('tent')) {
+      return 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('wall')) {
+      return 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('diary') || n.includes('planner')) {
+      return 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80';
+    }
+    return 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // 4. SIGNS, POSTERS & MARKETING
+  if (category === 'signs-posters-marketing' || category === 'posters-banners' || category === 'flyers-brochures') {
+    if (n.includes('standee') || n.includes('roll up') || n.includes('display')) {
+      return 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('banner') || n.includes('flex')) {
+      return 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('poster') || n.includes('flyer') || n.includes('brochure') || n.includes('leaflet')) {
+      return 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('canopy') || n.includes('tent') || n.includes('tablecloth')) {
+      return 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=800&q=80';
+    }
+    return 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // 5. STICKERS, LABELS & PACKAGING
+  if (category === 'stickers-labels' || category === 'packaging-boxes') {
+    if (n.includes('box') || n.includes('mailer') || n.includes('carton') || n.includes('packaging')) {
+      return 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('sticker') || n.includes('label') || n.includes('decal') || n.includes('skin')) {
+      return 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('tag')) {
+      return 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80';
+    }
+    return 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // 6. CLOTHING, CAPS & BAGS
+  if (category === 'clothing-caps-bags' || category === 'custom-tshirts' || category === 'caps-bags' || category === 'custom-winterwear') {
+    if (n.includes('hoodie') || n.includes('jacket') || n.includes('sweatshirt') || n.includes('sweater') || n.includes('winter')) {
+      return 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('polo')) {
+      return 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('t-shirt') || n.includes('tee') || n.includes('shirt')) {
+      return 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('cap') || n.includes('hat') || n.includes('beanie')) {
+      return 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('tote') || n.includes('jute')) {
+      return 'https://images.unsplash.com/photo-1597484661643-2f5fef640dd1?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('backpack') || n.includes('bag') || n.includes('duffle')) {
+      return 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80';
+    }
+    return 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // 7. MUGS, ALBUMS & GIFTS
+  if (category === 'mugs-albums-gifts' || category === 'mugs-bottles' || category === 'promotional-gifts' || category === 'drinkware') {
+    if (n.includes('frame') || n.includes('led') || n.includes('light') || n.includes('acrylic frame') || n.includes('silhouette')) {
+      return 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('canvas')) {
+      return 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('bottle') || n.includes('flask') || n.includes('sipper') || n.includes('tumbler')) {
+      return 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('mug') || n.includes('cup')) {
+      return 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80';
+    }
+    if (n.includes('keychain') || n.includes('magnet') || n.includes('coaster')) {
+      return 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80';
+    }
+    return 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // 8. PENS
+  if (category === 'pens' || category === 'engraved-pens') {
+    return 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // 9. STAMPS & INK
+  if (category === 'stamps-ink' || category === 'rubber-stamps') {
+    return 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=800&q=80';
+  }
+
+  // 10. ID CARDS, BADGES, CERTIFICATES
+  if (category === 'id-cards-lanyards' || category === 'badges-nameplates') {
+    return 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80';
+  }
+  if (category === 'certificates') {
+    return 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80';
+  }
+
+  return 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80';
+};
+
+// Generate all products with curated commercial studio photography for all items in the mega menu
 export const GENERATED_EMPTY_IMAGE_PRODUCTS: Product[] = (() => {
   const products: Product[] = [];
   const seenIds = new Set<string>();
@@ -997,6 +1161,7 @@ export const GENERATED_EMPTY_IMAGE_PRODUCTS: Product[] = (() => {
         seenIds.add(id);
 
         const pricing = getSuggestedPrice(item.name, item.category);
+        const initialImage = getCuratedProductImage(item.name, item.category, item.subCategory);
 
         products.push({
           id,
@@ -1016,10 +1181,8 @@ export const GENERATED_EMPTY_IMAGE_PRODUCTS: Product[] = (() => {
           tag: item.isNew ? 'New Addition' : 'Popular Choice',
           shortDescription: `${item.name} custom crafted with precision at Instaprint Baranagar Studio.`,
           description: `Custom ${item.name} for business and personal branding. High-definition commercial printing with rich color reproduction and durable premium materials. Ready for fast store pickup or courier delivery.`,
-          // Explicitly empty image per user instructions:
-          // "add all product without images, every product need to editable from admin panel.. add product without images, when admin add images then this product can buy a user, untill product buy btn is not working, after upload product image buy btn working"
-          image: '',
-          gallery: [],
+          image: initialImage,
+          gallery: [initialImage],
           turnaround: '24-48 Hours Express Dispatch',
           materials: 'Archival Cast Media & Premium Stock',
           features: [
