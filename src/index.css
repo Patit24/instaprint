@@ -1,0 +1,315 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-primary: #f43f5e;
+    --brand-gold: #f59e0b;
+    --studio-bg: #090b10;
+  }
+
+  body {
+    background-color: #090b10;
+    color: #e2e8f0;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #090b10;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #23293d;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3b4259;
+  }
+}
+
+/* Custom glow and print studio lighting effects */
+.glow-acrylic-warm {
+  box-shadow: 0 0 35px 8px rgba(245, 158, 11, 0.4), inset 0 0 15px rgba(251, 191, 36, 0.3);
+}
+
+.glow-acrylic-rose {
+  box-shadow: 0 0 35px 8px rgba(244, 63, 94, 0.45), inset 0 0 15px rgba(251, 113, 133, 0.3);
+}
+
+.glow-acrylic-cyan {
+  box-shadow: 0 0 35px 8px rgba(6, 182, 212, 0.45), inset 0 0 15px rgba(34, 211, 238, 0.3);
+}
+
+.glow-acrylic-white {
+  box-shadow: 0 0 35px 8px rgba(224, 242, 254, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.glass-panel {
+  background: rgba(18, 22, 34, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(24, 30, 48, 0.85);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.neon-text-rose {
+  text-shadow: 0 0 10px rgba(244, 63, 94, 0.8), 0 0 20px rgba(244, 63, 94, 0.5);
+}
+
+.neon-text-gold {
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.8), 0 0 20px rgba(245, 158, 11, 0.5);
+}
+
+/* Tactile paper texture simulation for print preview */
+.paper-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* ==========================================================================
+   LIGHT THEME 1-CLICK OVERRIDES (Comprehensive, Clean Studio White Theme)
+   ========================================================================== */
+
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Base App Wrapper */
+html.light .min-h-screen.bg-\[\#090b10\],
+html.light .min-h-screen.bg-\[\#07090e\] {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Surface backgrounds */
+html.light .bg-\[\#090b10\],
+html.light .bg-\[\#07090e\],
+html.light .bg-\[\#080a10\],
+html.light .bg-\[\#0a0d14\] {
+  background-color: #f8fafc !important;
+}
+
+/* Sticky Header & Navigations in Light Mode */
+html.light header.bg-\[\#090b10\]\/95 {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+html.light header .bg-gradient-to-r.from-brand-950\/70,
+html.light header .bg-gradient-to-r.from-brand-900\/60 {
+  background: linear-gradient(to right, #fff1f2, #ffffff, #fef3c7) !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+html.light header .bg-gradient-to-r.from-brand-950\/70 span,
+html.light header .bg-gradient-to-r.from-brand-900\/60 span,
+html.light header .bg-gradient-to-r.from-brand-950\/70 a,
+html.light header .bg-gradient-to-r.from-brand-900\/60 a {
+  color: #334155 !important;
+}
+
+html.light nav.bg-\[\#07090e\] {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light nav.bg-\[\#07090e\] button {
+  color: #334155 !important;
+}
+
+html.light nav.bg-\[\#07090e\] button:hover {
+  color: #0f172a !important;
+  background-color: #e2e8f0 !important;
+}
+
+/* Logo Text in Light Mode */
+html.light .font-extrabold.text-2xl.tracking-tight.text-white {
+  color: #0f172a !important;
+}
+
+/* Search input in Light Mode */
+html.light input.bg-\[\#121622\],
+html.light .bg-\[\#121622\] input {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Cards, Drawers, Panels and Containers */
+html.light .bg-\[\#121624\],
+html.light .bg-\[\#141824\],
+html.light .bg-\[\#121622\],
+html.light .bg-\[\#0d1017\],
+html.light .bg-\[\#0d101a\],
+html.light .bg-\[\#0e121a\],
+html.light .bg-\[\#0e121e\],
+html.light .bg-\[\#111420\],
+html.light .bg-\[\#111422\],
+html.light .bg-\[\#141826\],
+html.light .bg-\[\#0c0f18\]\/95 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Card hover and subtle interactive backgrounds */
+html.light .hover\:bg-\[\#1a2030\]:hover,
+html.light .bg-\[\#1a2030\],
+html.light .hover\:bg-slate-700:hover,
+html.light .hover\:bg-slate-800:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+/* Slate buttons and pills */
+html.light .bg-slate-800,
+html.light .bg-slate-800\/80,
+html.light .bg-slate-800\/60,
+html.light .bg-slate-800\/50,
+html.light .bg-slate-900 {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Border overrides */
+html.light .border-slate-800,
+html.light .border-slate-800\/80,
+html.light .border-slate-800\/60,
+html.light .border-slate-800\/50,
+html.light .border-slate-700,
+html.light .border-slate-700\/80,
+html.light .border-slate-700\/60,
+html.light .border-slate-900,
+html.light .border-slate-900\/80,
+html.light .border-\[\#1f2639\] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Text Hierarchy in Light Mode */
+html.light h1:not([class*="bg-clip-text"]),
+html.light h2:not([class*="bg-clip-text"]),
+html.light h3:not([class*="bg-clip-text"]),
+html.light h4:not([class*="bg-clip-text"]) {
+  color: #0f172a !important;
+}
+
+html.light .text-white:not(button):not(.btn-keep-white):not([class*="bg-gradient"]):not([class*="bg-brand"]):not([class*="bg-rose"]):not([class*="bg-emerald"]):not([class*="bg-amber"]):not([class*="bg-sky"]):not([class*="bg-blue"]):not([class*="bg-purple"]) {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-200,
+html.light .text-slate-300,
+html.light .text-\[\#e2e8f0\] {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Amber price text in Light Mode (rich readable amber/bronze) */
+html.light .font-mono.text-amber-400,
+html.light span.text-amber-400 {
+  color: #b45309 !important;
+}
+
+/* Vistaprint Badges in Light Mode */
+html.light [class*="bg-sky-950"] {
+  background-color: #f0f9ff !important;
+  color: #0284c7 !important;
+  border-color: #bae6fd !important;
+}
+
+/* Form inputs & selects */
+html.light input:not([type="checkbox"]):not([type="radio"]),
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Hero Section Gradient in Light Mode */
+html.light section.bg-gradient-to-b.from-\[\#090b10\].via-\[\#0d1019\].to-\[\#090b10\] {
+  background: linear-gradient(to bottom, #ffffff, #f1f5f9, #f8fafc) !important;
+}
+
+/* Mobile Sticky Bottom Floating Bar in Light Mode */
+html.light .fixed.bottom-0.bg-\[\#090b10\]\/95 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Footer in Light Mode */
+html.light footer.bg-\[\#06080c\] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+html.light footer .border-b.border-slate-900\/80,
+html.light footer .border-t.border-slate-900 {
+  border-color: #e2e8f0 !important;
+}
+
+html.light footer .text-slate-400,
+html.light footer .text-slate-500 {
+  color: #64748b !important;
+}
+
+html.light footer .text-white {
+  color: #0f172a !important;
+}
+
+html.light footer .text-slate-300 {
+  color: #334155 !important;
+}
+
+/* Modal Backdrops remain semi-transparent slate */
+html.light .bg-black\/90,
+html.light .bg-black\/80 {
+  background-color: rgba(15, 23, 42, 0.75) !important;
+}
+
+/* Light Scrollbars */
+html.light ::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
