@@ -14,15 +14,15 @@ import {
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import { Product } from "../types";
 
-// User's Firebase Configuration
+// User's Firebase Configuration (reads from .env with verified fallbacks)
 export const firebaseConfig = {
-  apiKey: "AIzaSyDTUNg5I_bukvBhRUasfvcjrK_fnlmRjVg",
-  authDomain: "instaprint-b374d.firebaseapp.com",
-  projectId: "instaprint-b374d",
-  storageBucket: "instaprint-b374d.firebasestorage.app",
-  messagingSenderId: "197899370662",
-  appId: "1:197899370662:web:08af1b14b31d1fa8f3f467",
-  measurementId: "G-DEXEE1V905"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDTUNg5I_bukvBhRUasfvcjrK_fnlmRjVg",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "instaprint-b374d.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "instaprint-b374d",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "instaprint-b374d.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "197899370662",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:197899370662:web:08af1b14b31d1fa8f3f467",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-DEXEE1V905"
 };
 
 // Initialize Firebase App

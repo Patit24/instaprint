@@ -5,6 +5,7 @@ import { ProductCatalog } from './components/ProductCatalog';
 import { ProductDetailPage } from './components/ProductDetailPage';
 import { CategoriesDirectory } from './components/CategoriesDirectory';
 import { CustomerAccount } from './components/CustomerAccount';
+import { GuestOrderHub } from './components/GuestOrderHub';
 import { AdminPanel } from './components/AdminPanel';
 import { AboutUs } from './components/AboutUs';
 import { ContactUs } from './components/ContactUs';
@@ -71,16 +72,8 @@ export const App: React.FC = () => {
     return SAMPLE_PRODUCTS;
   });
 
-  // User state
-  const [user, setUser] = useState<UserProfile | null>(() => {
-    try {
-      const saved = localStorage.getItem('instaprint_user');
-      if (saved) return JSON.parse(saved);
-    } catch {
-      // fallback
-    }
-    return INITIAL_USER;
-  });
+  // User state - All customers checkout as guests (no mandatory user profile)
+  const [user, setUser] = useState<UserProfile | null>(null);
 
   // Wishlist state (starts clean with no demo data)
   const [wishlist, setWishlist] = useState<string[]>(() => {
@@ -486,9 +479,9 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* CUSTOMER ACCOUNT DASHBOARD (MY ACCOUNT, ORDERS, SAVED ADDRESSES, WISHLIST, INVOICES) */}
+        {/* GUEST ORDER HUB & ORDER TRACKING DASHBOARD */}
         {activePage === 'account' && (
-          <div className="py-8">
+          <div>
             {user ? (
               <CustomerAccount
                 user={user}
@@ -507,21 +500,15 @@ export const App: React.FC = () => {
                 }}
               />
             ) : (
-              <div className="max-w-md mx-auto text-center py-20 px-4 space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-brand-500/10 border border-brand-500/30 text-brand-400 flex items-center justify-center mx-auto">
-                  <ShoppingBag className="w-8 h-8" />
-                </div>
-                <h2 className="text-2xl font-bold text-white">Sign In to Your Account</h2>
-                <p className="text-xs text-slate-400">
-                  Access your previous orders, print invoices, manage saved delivery addresses, and track real-time printing stages.
-                </p>
-                <button
-                  onClick={() => setIsAuthOpen(true)}
-                  className="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-glow-rose"
-                >
-                  Sign In / Register
-                </button>
-              </div>
+              <GuestOrderHub
+                orders={orders}
+                onReorder={handleReorder}
+                onSelectProduct={handleSelectProduct}
+                onTrackOrderClick={(orderId) => {
+                  setIsTrackOrderOpen(true);
+                }}
+                onStartShopping={() => handleNavigate('shop')}
+              />
             )}
           </div>
         )}

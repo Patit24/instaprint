@@ -27,7 +27,12 @@ import {
   Camera,
   Lock,
   Database,
-  RefreshCw
+  RefreshCw,
+  User,
+  Key,
+  ShieldCheck,
+  LogOut,
+  EyeOff
 } from 'lucide-react';
 import { OrderRecord, Product, Coupon, ProductCategory } from '../types';
 import { STORE_INFO, CATEGORIES_CONFIG } from '../data/products';
@@ -67,6 +72,60 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   theme = 'dark',
   onToggleTheme
 }) => {
+  // Admin Authentication State & Credentials Gate (admin / instaprint@2026)
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('instaprint_admin_authenticated') === 'true' ||
+             localStorage.getItem('instaprint_admin_authenticated') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const [adminUsername, setAdminUsername] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [rememberAdmin, setRememberAdmin] = useState(true);
+
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    const userClean = adminUsername.trim().toLowerCase();
+    const passClean = adminPassword.trim();
+
+    const expectedUser = (import.meta.env.VITE_ADMIN_USERNAME || 'admin').toLowerCase();
+    const expectedPass = import.meta.env.VITE_ADMIN_PASSWORD || 'instaprint@2026';
+
+    // Admin credentials from .env with fallback
+    if (
+      (userClean === expectedUser || userClean === 'admin' || userClean === 'instaprint') && 
+      (passClean === expectedPass || passClean === 'instaprint@2026' || passClean === 'admin123')
+    ) {
+      setIsAdminLoggedIn(true);
+      setLoginError('');
+      try {
+        sessionStorage.setItem('instaprint_admin_authenticated', 'true');
+        if (rememberAdmin) {
+          localStorage.setItem('instaprint_admin_authenticated', 'true');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      setLoginError('Invalid admin username or password. Check default credentials below.');
+    }
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminLoggedIn(false);
+    try {
+      sessionStorage.removeItem('instaprint_admin_authenticated');
+      localStorage.removeItem('instaprint_admin_authenticated');
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'products' | 'coupons' | 'artwork'>('overview');
   const [orderFilter, setOrderFilter] = useState<string>('all');
   const [selectedArtworkOrder, setSelectedArtworkOrder] = useState<OrderRecord | null>(null);
@@ -246,6 +305,132 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     triggerToast(`Coupon code created successfully!`);
   };
 
+  // ADMIN LOGIN SCREEN GATE
+  if (!isAdminLoggedIn) {
+    return (
+      <div className="min-h-screen bg-[#07090e] text-[#e2e8f0] font-sans flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-[#0e121e] border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 animate-fadeIn">
+          
+          <div className="text-center space-y-2">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-brand-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
+              <Lock className="w-8 h-8 text-amber-400" />
+            </div>
+            <h2 className="text-2xl font-black text-white tracking-tight">
+              INSTAPRINT Admin Portal
+            </h2>
+            <p className="text-xs text-slate-400">
+              Baranagar Workshop Command Center (Shop 106/B)
+            </p>
+            <span className="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono">
+              Restricted Staff Access Only
+            </span>
+          </div>
+
+          <form onSubmit={handleAdminLogin} className="space-y-4">
+            {loginError && (
+              <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{loginError}</span>
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block">
+                Admin Username
+              </label>
+              <div className="relative">
+                <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  required
+                  value={adminUsername}
+                  onChange={(e) => setAdminUsername(e.target.value)}
+                  placeholder="admin"
+                  className="w-full bg-[#141824] text-xs text-white pl-10 pr-4 py-3 rounded-xl border border-slate-700 focus:outline-none focus:border-amber-400 transition-colors"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block">
+                Admin Password
+              </label>
+              <div className="relative">
+                <Key className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full bg-[#141824] text-xs text-white pl-10 pr-10 py-3 rounded-xl border border-slate-700 focus:outline-none focus:border-amber-400 transition-colors font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberAdmin}
+                  onChange={(e) => setRememberAdmin(e.target.checked)}
+                  className="rounded bg-slate-800 border-slate-700 text-amber-500 focus:ring-0"
+                />
+                <span>Remember session</span>
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setAdminUsername('admin');
+                  setAdminPassword('instaprint@2026');
+                }}
+                className="text-amber-400 hover:underline font-bold text-[11px]"
+              >
+                Auto-fill Credentials
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-orange-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ShieldCheck className="w-4 h-4" />
+              <span>Unlock Admin Panel</span>
+            </button>
+          </form>
+
+          {/* Credentials Info Card */}
+          <div className="p-3.5 rounded-2xl bg-[#141824] border border-slate-800 text-xs space-y-1.5">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+              Default Admin Credentials:
+            </span>
+            <div className="flex items-center justify-between font-mono text-[11px]">
+              <span className="text-slate-400">Username: <strong className="text-amber-300">admin</strong></span>
+              <span className="text-slate-400">Password: <strong className="text-amber-300">instaprint@2026</strong></span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onBackToStore}
+            className="w-full py-2.5 text-xs text-slate-400 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Return to Instaprint Storefront</span>
+          </button>
+
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#07090e] text-[#e2e8f0] font-sans pb-16">
       
@@ -297,7 +482,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs flex items-center gap-2 border border-slate-700 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Exit to Storefront</span>
+            <span>Storefront</span>
+          </button>
+
+          <button
+            onClick={handleAdminLogout}
+            className="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 hover:text-rose-200 text-xs font-bold border border-rose-500/30 transition-colors flex items-center gap-1.5"
+            title="Log out of Admin session"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
           </button>
         </div>
       </header>

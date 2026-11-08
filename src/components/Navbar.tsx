@@ -20,7 +20,8 @@ import {
   Mail,
   Compass,
   Sun,
-  Moon
+  Moon,
+  Lock
 } from 'lucide-react';
 import { STORE_INFO, CATEGORIES_CONFIG, MEGA_MENU_CATEGORIES, SAMPLE_PRODUCTS } from '../data/products';
 import { CartItem, AppPage, UserProfile, Product, ProductCategory } from '../types';
@@ -339,31 +340,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            {/* Customer Account / Sign In Pill */}
-            {user ? (
-              <button
-                onClick={onOpenAccount}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-medium transition-all ${
-                  activePage === 'account'
-                    ? 'bg-brand-600/30 text-brand-300 border-brand-500'
-                    : 'bg-[#141824] hover:bg-[#1a2030] text-slate-200 border-slate-700/80'
-                }`}
-                title="Customer Account Dashboard"
-              >
-                <div className="w-5 h-5 rounded-full bg-brand-500 text-white font-bold text-[10px] flex items-center justify-center">
-                  {user.name.charAt(0)}
-                </div>
-                <span className="hidden sm:inline max-w-[85px] truncate font-semibold">{user.name.split(' ')[0]}</span>
-              </button>
-            ) : (
-              <button
-                onClick={onOpenAuth}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#141824] hover:bg-[#1a2030] border border-slate-700/80 text-xs font-medium text-slate-200 hover:text-white transition-all"
-              >
-                <User className="w-4 h-4 text-brand-400" />
-                <span className="hidden sm:inline">Sign In</span>
-              </button>
-            )}
+            {/* Studio Admin Portal with Lock Icon (Staff Access) */}
+            <button
+              onClick={() => onNavigate('admin')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all ${
+                activePage === 'admin'
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-glow-amber'
+                  : 'bg-[#141824] hover:bg-slate-800 text-slate-200 border-slate-700/80 hover:border-amber-500/40'
+              }`}
+              title="Staff Admin Portal (Protected with Username & Password)"
+            >
+              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Admin</span>
+            </button>
 
             {/* Cart Button */}
             <button
