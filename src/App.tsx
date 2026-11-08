@@ -28,10 +28,20 @@ import {
 } from './data/products';
 import { 
   subscribeToFirestoreProducts, 
-  saveProductToFirestore, 
-  deleteProductFromFirestore, 
+  subscribeToFirestoreOrders,
   seedInitialCatalogToFirestore 
 } from './services/firebase';
+import { 
+  dbGetAllProducts, 
+  dbSaveProduct, 
+  dbDeleteProduct, 
+  dbGetAllOrders, 
+  dbSaveOrder, 
+  dbUpdateOrderStatus, 
+  dbGetAllCoupons, 
+  dbSaveCoupon, 
+  dbDeleteCoupon 
+} from './services/db';
 import { ShoppingBag, MessageCircle, Phone, ArrowLeft, Sun, Moon } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -183,36 +193,70 @@ export const App: React.FC = () => {
     }
   }, [coupons]);
 
-  // Real-time Firestore subscription & Auto-seed initial catalog
-  // ZERO local storage persistence for products - strictly Cloud Firestore single source of truth
+  // Real-time Master Database Sync (IndexedDB + Cloud Firestore)
+  // Ensures products, uploaded photos, orders, and coupons are permanently saved
   useEffect(() => {
-    try {
-      localStorage.removeItem('instaprint_products');
-    } catch {}
+    // 1. Load permanent products from master database
+    dbGetAllProducts().then(storedProducts => {
+      if (storedProducts && storedProducts.length > 0) {
+        setProducts(storedProducts);
+      }
+    });
 
-    let unsubscribe: (() => void) | undefined;
+    // 2. Load permanent orders from master database
+    dbGetAllOrders().then(storedOrders => {
+      if (storedOrders && storedOrders.length > 0) {
+        setOrders(storedOrders);
+      }
+    });
+
+    // 3. Load coupons from master database
+    dbGetAllCoupons().then(storedCoupons => {
+      if (storedCoupons && storedCoupons.length > 0) {
+        setCoupons(storedCoupons);
+      }
+    });
+
+    // 4. Real-time Cloud Firestore synchronization
+    let unsubProducts: (() => void) | undefined;
+    let unsubOrders: (() => void) | undefined;
+
     try {
-      unsubscribe = subscribeToFirestoreProducts((firestoreProducts) => {
+      unsubProducts = subscribeToFirestoreProducts((firestoreProducts) => {
         if (firestoreProducts && firestoreProducts.length > 0) {
-          // Merge Cloud Firestore updates into the full catalog so every category maintains all distinct products
           setProducts((prev) => {
             const productMap = new Map<string, Product>();
-            // 1. Base distinct products for all 20 categories
             SAMPLE_PRODUCTS.forEach(p => productMap.set(p.id, p));
-            // 2. Local state additions
             prev.forEach(p => productMap.set(p.id, p));
-            // 3. Firestore cloud updates (admin uploaded images, prices, custom items)
             firestoreProducts.forEach(p => productMap.set(p.id, p));
             return Array.from(productMap.values());
           });
         }
       });
     } catch (err) {
-      console.error('Firestore subscription error:', err);
+      console.warn('Firestore products subscription notice:', err);
+    }
+
+    try {
+      unsubOrders = subscribeToFirestoreOrders((firestoreOrders) => {
+        if (firestoreOrders && firestoreOrders.length > 0) {
+          setOrders(prev => {
+            const map = new Map<string, OrderRecord>();
+            prev.forEach(o => map.set(o.orderId, o));
+            firestoreOrders.forEach(o => map.set(o.orderId, o));
+            return Array.from(map.values()).sort((a, b) => 
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          });
+        }
+      });
+    } catch (err) {
+      console.warn('Firestore orders subscription notice:', err);
     }
 
     return () => {
-      if (unsubscribe) unsubscribe();
+      if (unsubProducts) unsubProducts();
+      if (unsubOrders) unsubOrders();
     };
   }, []);
 
@@ -263,6 +307,7 @@ export const App: React.FC = () => {
 
   const handleOrderSuccess = (newOrder: OrderRecord) => {
     setOrders(prev => [newOrder, ...prev]);
+    dbSaveOrder(newOrder);
     setCart([]);
     setIsCheckoutOpen(false);
   };
@@ -311,31 +356,26 @@ export const App: React.FC = () => {
     setIsCartOpen(true);
   };
 
-  // Admin order status update
+  // Admin order status update - Saved to Master Database permanently
   const handleUpdateOrderStatus = (orderId: string, status: OrderRecord['orderStatus']) => {
     setOrders(prev => prev.map(o => o.orderId === orderId ? { ...o, orderStatus: status } : o));
+    dbUpdateOrderStatus(orderId, status);
   };
 
-  // Admin product updates synced with Firebase Cloud Firestore
+  // Admin product updates synced with Master Database permanently
   const handleUpdateProduct = (updatedProduct: Product) => {
     setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
-    saveProductToFirestore(updatedProduct).catch(err => {
-      console.warn('Firestore update sync notice:', err);
-    });
+    dbSaveProduct(updatedProduct);
   };
 
   const handleAddProduct = (newProduct: Product) => {
     setProducts(prev => [newProduct, ...prev]);
-    saveProductToFirestore(newProduct).catch(err => {
-      console.warn('Firestore add sync notice:', err);
-    });
+    dbSaveProduct(newProduct);
   };
 
   const handleDeleteProduct = (productId: string) => {
     setProducts(prev => prev.filter(p => p.id !== productId));
-    deleteProductFromFirestore(productId).catch(err => {
-      console.warn('Firestore delete sync notice:', err);
-    });
+    dbDeleteProduct(productId);
   };
 
   // Admin manual cloud DB sync
@@ -343,13 +383,15 @@ export const App: React.FC = () => {
     await seedInitialCatalogToFirestore(products);
   };
 
-  // Admin coupon operations
+  // Admin coupon operations - Saved to Master Database permanently
   const handleAddCoupon = (newCoupon: Coupon) => {
     setCoupons(prev => [newCoupon, ...prev]);
+    dbSaveCoupon(newCoupon);
   };
 
   const handleDeleteCoupon = (code: string) => {
     setCoupons(prev => prev.filter(c => c.code !== code));
+    dbDeleteCoupon(code);
   };
 
   // View dedicated product page

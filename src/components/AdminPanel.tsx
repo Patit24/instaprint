@@ -38,6 +38,7 @@ import { OrderRecord, Product, Coupon, ProductCategory } from '../types';
 import { STORE_INFO, CATEGORIES_CONFIG } from '../data/products';
 import { ProductUploadModal } from './ProductUploadModal';
 import { hasProductImage } from '../services/firebase';
+import { compressImage } from '../services/db';
 
 interface AdminPanelProps {
   orders: OrderRecord[];
@@ -191,23 +192,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     quickFileInputRef.current?.click();
   };
 
-  const handleQuickFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleQuickFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0 && quickUploadProduct) {
       const fileList = Array.from(files).slice(0, 5);
-      const readPromises = fileList.map(file => {
-        return new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            if (typeof reader.result === 'string') resolve(reader.result);
-            else resolve('');
-          };
-          reader.readAsDataURL(file);
-        });
-      });
-
-      Promise.all(readPromises).then(results => {
-        const validImages = results.filter(Boolean);
+      try {
+        const compressPromises = fileList.map(file => compressImage(file, 1200, 0.82));
+        const validImages = (await Promise.all(compressPromises)).filter(Boolean);
+        
         if (validImages.length > 0) {
           const updated: Product = {
             ...quickUploadProduct,
@@ -215,11 +207,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             gallery: validImages
           };
           onUpdateProduct(updated);
-          triggerToast(`${validImages.length} photo(s) uploaded for "${quickUploadProduct.name}"! Synced to Firestore.`);
+          triggerToast(`${validImages.length} photo(s) optimized & permanently saved to database for "${quickUploadProduct.name}"!`);
           setQuickUploadProduct(null);
           if (e.target) e.target.value = '';
         }
-      });
+      } catch (err) {
+        console.error('Error processing quick upload photos:', err);
+        triggerToast('Failed to process image. Please try again.');
+      }
     }
   };
 

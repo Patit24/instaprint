@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { CartItem, OrderRecord } from '../types';
 import { STORE_INFO } from '../data/products';
+import { dbSaveOrder } from '../services/db';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -106,7 +107,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       trackingNumber: `TRACK-${Math.floor(100000 + Math.random() * 900000)}`
     };
 
-    // Save to localStorage for order tracking
+    // Save permanently to Database (IndexedDB & Cloud Firestore)
+    dbSaveOrder(newOrder);
+
+    // Backup to localStorage for legacy browser recovery
     try {
       const existing = JSON.parse(localStorage.getItem('instaprint_orders') || '[]');
       existing.unshift(newOrder);

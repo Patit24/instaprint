@@ -422,18 +422,20 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
         </div>
 
         {/* Razorpay Integration Notice & WhatsApp Ordering Banner */}
-        <div className="mb-6 p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="mb-6 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-300 dark:border-emerald-500/30 text-emerald-950 dark:text-emerald-300 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-2.5">
-            <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>
-              <strong>Direct WhatsApp Booking Active:</strong> Online Buy Now is temporarily disabled while Razorpay payment gateway integration is in progress. Please contact our Baranagar workshop through the <strong>WhatsApp Enquiry</strong> button on any product!
+            <div className="w-7 h-7 rounded-lg bg-emerald-600 dark:bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+              <MessageCircle className="w-4 h-4 fill-white text-emerald-600" />
+            </div>
+            <span className="leading-relaxed text-[11.5px] text-emerald-950 dark:text-emerald-100">
+              <strong className="text-emerald-900 dark:text-emerald-300 font-extrabold">Direct WhatsApp Booking Active:</strong> Online Buy Now is temporarily disabled while Razorpay payment gateway integration is in progress. Please contact our Baranagar workshop through the <strong>WhatsApp Enquiry</strong> button on any product!
             </span>
           </div>
           <a
             href={`https://wa.me/${STORE_INFO.whatsapp}?text=${encodeURIComponent("Hi Instaprint! I would like to enquire about placing a custom printing order.")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-amber-300 hover:text-white font-bold underline shrink-0 text-xs flex items-center gap-1"
+            className="text-emerald-700 dark:text-amber-300 hover:text-emerald-900 dark:hover:text-white font-bold underline shrink-0 text-xs flex items-center gap-1"
           >
             <span>WhatsApp Hotline ({STORE_INFO.phone})</span>
             <span>→</span>

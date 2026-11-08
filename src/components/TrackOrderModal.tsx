@@ -17,6 +17,7 @@ import {
 import { STORE_INFO } from '../data/products';
 import { OrderRecord } from '../types';
 import { getOrderStatusStageInfo } from '../services/orderTracking';
+import { dbGetAllOrders } from '../services/db';
 
 interface TrackOrderModalProps {
   isOpen: boolean;
@@ -44,14 +45,14 @@ export const TrackOrderModal: React.FC<TrackOrderModalProps> = ({ isOpen, onClos
     setTimeout(() => setCopiedTracking(false), 2000);
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setHasSearched(true);
     const q = searchQuery.trim().toUpperCase();
 
     try {
-      const orders: OrderRecord[] = JSON.parse(localStorage.getItem('instaprint_orders') || '[]');
-      const match = orders.find(
+      const dbOrders = await dbGetAllOrders();
+      const match = dbOrders.find(
         (o) => o.orderId.toUpperCase() === q || o.trackingNumber.toUpperCase() === q || o.customer.phone.includes(q)
       );
 

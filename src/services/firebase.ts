@@ -12,7 +12,7 @@ import {
   limit
 } from "firebase/firestore";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
-import { Product } from "../types";
+import { Product, OrderRecord, Coupon } from "../types";
 
 // User's Firebase Configuration (reads from .env with verified fallbacks)
 export const firebaseConfig = {
@@ -212,5 +212,114 @@ export const seedInitialCatalogToFirestore = async (defaultProducts: Product[]):
   } catch (error) {
     console.warn("[Firestore] Auto-seed failed or skipped (network/rules):", error);
     return false;
+  }
+};
+
+// =============================================================================
+// ORDERS CLOUD FIRESTORE OPERATIONS
+// =============================================================================
+
+const ORDERS_COLLECTION = "orders";
+
+export const saveOrderToFirestore = async (order: OrderRecord): Promise<void> => {
+  try {
+    const docRef = doc(db, ORDERS_COLLECTION, order.orderId);
+    const sanitized = JSON.parse(JSON.stringify(order));
+    await setDoc(docRef, sanitized, { merge: true });
+    console.log(`[Firestore] Order "${order.orderId}" saved to Cloud Firestore.`);
+  } catch (error) {
+    console.warn("[Firestore] Error saving order to Firestore:", error);
+    throw error;
+  }
+};
+
+export const fetchOrdersFromFirestore = async (): Promise<OrderRecord[]> => {
+  try {
+    const ordersCol = collection(db, ORDERS_COLLECTION);
+    const snapshot = await getDocs(ordersCol);
+    if (snapshot.empty) return [];
+    const list: OrderRecord[] = [];
+    snapshot.forEach(docSnap => {
+      list.push(docSnap.data() as OrderRecord);
+    });
+    return list;
+  } catch (error) {
+    console.warn("[Firestore] Error fetching orders from Firestore:", error);
+    return [];
+  }
+};
+
+export const subscribeToFirestoreOrders = (
+  onOrders: (orders: OrderRecord[]) => void,
+  onError?: (err: any) => void
+): (() => void) => {
+  try {
+    const ordersCol = collection(db, ORDERS_COLLECTION);
+    return onSnapshot(
+      ordersCol,
+      (snapshot) => {
+        if (!snapshot.empty) {
+          const list: OrderRecord[] = [];
+          snapshot.forEach(docSnap => {
+            list.push(docSnap.data() as OrderRecord);
+          });
+          onOrders(list);
+        }
+      },
+      (err) => {
+        if (onError) onError(err);
+      }
+    );
+  } catch (error) {
+    return () => {};
+  }
+};
+
+export const updateOrderStatusInFirestore = async (
+  orderId: string,
+  status: OrderRecord['orderStatus']
+): Promise<void> => {
+  try {
+    const docRef = doc(db, ORDERS_COLLECTION, orderId);
+    await setDoc(docRef, { orderStatus: status, updatedAt: new Date().toISOString() }, { merge: true });
+  } catch (error) {
+    console.warn("[Firestore] Error updating order status:", error);
+  }
+};
+
+// =============================================================================
+// COUPONS CLOUD FIRESTORE OPERATIONS
+// =============================================================================
+
+const COUPONS_COLLECTION = "coupons";
+
+export const saveCouponToFirestore = async (coupon: Coupon): Promise<void> => {
+  try {
+    const docRef = doc(db, COUPONS_COLLECTION, coupon.code);
+    await setDoc(docRef, JSON.parse(JSON.stringify(coupon)), { merge: true });
+  } catch (error) {
+    console.warn("[Firestore] Error saving coupon:", error);
+  }
+};
+
+export const fetchCouponsFromFirestore = async (): Promise<Coupon[]> => {
+  try {
+    const col = collection(db, COUPONS_COLLECTION);
+    const snapshot = await getDocs(col);
+    if (snapshot.empty) return [];
+    const list: Coupon[] = [];
+    snapshot.forEach(d => list.push(d.data() as Coupon));
+    return list;
+  } catch (error) {
+    return [];
+  }
+};
+
+export const deleteCouponFromFirestore = async (code: string): Promise<void> => {
+  try {
+    const docRef = doc(db, COUPONS_COLLECTION, code);
+    await deleteDoc(docRef);
+  } catch (error) {
+    console.warn("[Firestore] Error deleting coupon:", error);
   }
 };

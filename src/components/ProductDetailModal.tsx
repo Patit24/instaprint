@@ -436,11 +436,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
             {/* Photo Pending Status Notice */}
             {!hasProductImage(product) && (
-              <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-300 text-xs flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-500/40 text-amber-950 dark:text-amber-300 text-xs flex items-start gap-2.5 shadow-sm">
+                <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-white">Online Purchasing Temporarily Locked</p>
-                  <p className="text-[11px] text-slate-300 mt-0.5 leading-relaxed">
+                  <p className="font-extrabold text-amber-950 dark:text-white text-xs">Online Purchasing Temporarily Locked</p>
+                  <p className="text-[11px] text-amber-900/90 dark:text-slate-300 mt-0.5 leading-relaxed">
                     This product is waiting for store admin to upload product photos. The Buy / Add to Bag button will unlock as soon as photos are published.
                   </p>
                 </div>
@@ -448,25 +448,25 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             )}
 
             {/* Quantity Selector & Action */}
-            <div className="pt-3 border-t border-slate-800 space-y-3">
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs text-slate-400 block">Quantity:</span>
+                  <span className="text-xs text-slate-600 dark:text-slate-400 block font-medium">Quantity:</span>
                   <span className="text-[10px] text-slate-500">
                     {product.unitLabel ? `(${product.unitLabel} each)` : ''}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 bg-[#141824] px-3 py-1.5 rounded-xl border border-slate-800">
+                <div className="flex items-center gap-3 bg-slate-100 dark:bg-[#141824] px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-800">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="text-slate-400 hover:text-white font-bold text-sm px-1"
+                    className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold text-sm px-1"
                   >
                     -
                   </button>
-                  <span className="text-xs font-bold text-white w-6 text-center font-mono">{quantity}</span>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white w-6 text-center font-mono">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="text-slate-400 hover:text-white font-bold text-sm px-1"
+                    className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold text-sm px-1"
                   >
                     +
                   </button>
@@ -479,19 +479,19 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   href={`https://wa.me/${STORE_INFO.whatsapp}?text=${encodeURIComponent(`Hi Instaprint Baranagar! I want to order/inquire: ${product.name} (Qty: ${quantity}, ${selectedSize || 'Standard'}). Total: ₹${(currentPrice * quantity).toLocaleString('en-IN')}. Please share sample proof.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#25D366] to-[#20bd5a] hover:from-[#20bd5a] hover:to-[#1a9f4c] text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all hover:scale-[1.01] active:scale-[0.98]"
+                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#25D366] to-[#20bd5a] hover:from-[#20bd5a] hover:to-[#1a9f4c] text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all hover:scale-[1.01] active:scale-[0.98] border border-emerald-400"
                 >
                   <MessageCircle className="w-4 h-4 fill-slate-950 text-[#25D366]" />
                   <span>Enquire & Order on WhatsApp (₹{(currentPrice * quantity).toLocaleString('en-IN')})</span>
                 </a>
 
                 {/* DISABLED BUY NOW (RAZORPAY INTEGRATION PENDING) */}
-                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
-                  <span className="flex items-center gap-1.5 font-medium">
-                    <Lock className="w-3.5 h-3.5 text-amber-400" />
+                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 flex items-center justify-between text-xs text-slate-700 dark:text-slate-400 shadow-sm">
+                  <span className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-300">
+                    <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                     <span>Buy Now Disabled:</span>
                   </span>
-                  <span className="text-[10px] text-amber-400 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                  <span className="text-[10px] text-amber-900 dark:text-amber-400 font-mono font-bold bg-amber-100 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-300 dark:border-amber-500/20">
                     Razorpay Pending
                   </span>
                 </div>

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Product, ProductCategory, BulkTier } from '../types';
 import { CATEGORIES_CONFIG } from '../data/products';
+import { compressImage } from '../services/db';
 
 interface ProductUploadModalProps {
   isOpen: boolean;
@@ -257,24 +258,20 @@ export const ProductUploadModal: React.FC<ProductUploadModalProps> = ({
     }
   };
 
-  const handleGalleryFilesAdd = (files: FileList | null) => {
+  const handleGalleryFilesAdd = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-    const fileList = Array.from(files).filter(f => f.type.startsWith('image/'));
-    fileList.forEach(file => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (e) => {
-        const res = e.target?.result as string;
-        if (res) {
-          setGallery(prev => {
-            if (prev.length >= 5) return prev;
-            const updated = [...prev, res];
-            if (!image) setImage(res);
-            return updated;
-          });
-        }
-      };
-    });
+    const fileList = Array.from(files).filter(f => f.type.startsWith('image/')).slice(0, 5);
+    try {
+      const compressPromises = fileList.map(f => compressImage(f, 1200, 0.82));
+      const compressedList = (await Promise.all(compressPromises)).filter(Boolean);
+      setGallery(prev => {
+        const combined = [...prev, ...compressedList].slice(0, 5);
+        if (!image && combined.length > 0) setImage(combined[0]);
+        return combined;
+      });
+    } catch (err) {
+      console.error('Gallery compression error:', err);
+    }
   };
 
   // Add bullet point feature
