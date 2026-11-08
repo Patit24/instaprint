@@ -139,9 +139,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         
         {/* Top Header */}
         <div className="px-6 py-4 border-b border-slate-800 bg-[#090b10] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-amber-500 flex items-center justify-center text-white font-bold text-xs">
-              IP
+          <div className="flex items-center gap-2.5">
+            <div className="bg-white/95 px-2 py-1 rounded-xl shadow-sm border border-white/20">
+              <img
+                src="/logo.png"
+                alt="Instaprint Logo"
+                className="h-6 w-auto object-contain"
+              />
             </div>
             <div>
               <h3 className="font-extrabold text-base text-white">

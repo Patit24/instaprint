@@ -93,17 +93,16 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Brand Manifesto */}
           <div className="lg:col-span-4 space-y-4">
             <div 
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex items-center gap-2 cursor-pointer group"
               onClick={() => onNavigate('home')}
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 via-rose-600 to-amber-500 p-[2px]">
-                <div className="w-full h-full bg-[#0d1017] rounded-[10px] flex items-center justify-center font-black text-white text-base">
-                  IP
-                </div>
+              <div className="bg-white/95 hover:bg-white px-3 py-1.5 rounded-2xl shadow-md border border-white/20 transition-all inline-block">
+                <img
+                  src="/logo.png"
+                  alt="Instaprint - Best Printing. Best Price."
+                  className="h-8 w-auto object-contain"
+                />
               </div>
-              <span className="font-extrabold text-2xl tracking-tight text-white">
-                INSTA<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-amber-400">PRINT</span>
-              </span>
             </div>
 
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">

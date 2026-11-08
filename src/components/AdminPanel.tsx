@@ -338,12 +338,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       <div className="min-h-screen bg-[#07090e] text-[#e2e8f0] font-sans flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-[#0e121e] border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 animate-fadeIn">
           
-          <div className="text-center space-y-2">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-brand-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
-              <Lock className="w-8 h-8 text-amber-400" />
+          <div className="text-center space-y-3">
+            <div className="bg-white/95 px-4 py-2 rounded-2xl border border-white/30 shadow-lg mx-auto inline-block">
+              <img
+                src="/logo.png"
+                alt="Instaprint Logo"
+                className="h-9 w-auto object-contain mx-auto"
+              />
             </div>
             <h2 className="text-2xl font-black text-white tracking-tight">
-              INSTAPRINT Admin Portal
+              Admin Command Portal
             </h2>
             <p className="text-xs text-slate-400">
               Baranagar Workshop Command Center (Shop 106/B)
@@ -472,12 +476,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* Admin Top Header */}
       <header className="sticky top-0 z-40 bg-[#0c0f18]/95 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-amber-500 flex items-center justify-center text-white font-black text-sm shadow-glow-rose">
-            IP
+          <div className="bg-white/95 px-2.5 py-1 rounded-xl shadow-sm border border-white/20">
+            <img
+              src="/logo.png"
+              alt="Instaprint Logo"
+              className="h-7 w-auto object-contain"
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-extrabold text-base text-white tracking-tight">INSTAPRINT Command Center</h1>
+              <h1 className="font-extrabold text-base text-white tracking-tight">Command Center</h1>
               <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30">
                 Staff Admin
               </span>

@@ -413,9 +413,16 @@ export const GuestOrderHub: React.FC<GuestOrderHubProps> = ({
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-2xl bg-white text-slate-900 rounded-3xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b pb-4">
-              <div>
-                <h3 className="text-xl font-black text-slate-950 tracking-tight">TAX INVOICE</h3>
-                <p className="text-xs text-slate-500">Instaprint Commercial Print Studio, Baranagar</p>
+              <div className="flex items-center gap-3">
+                <img
+                  src="/logo.png"
+                  alt="Instaprint"
+                  className="h-8 w-auto object-contain"
+                />
+                <div>
+                  <h3 className="text-xl font-black text-slate-950 tracking-tight">TAX INVOICE</h3>
+                  <p className="text-xs text-slate-500">Instaprint Commercial Print Studio, Baranagar</p>
+                </div>
               </div>
               <button
                 onClick={() => setSelectedInvoiceOrder(null)}

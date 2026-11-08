@@ -235,28 +235,23 @@ export const Navbar: React.FC<NavbarProps> = ({
           
           {/* Brand Logo */}
           <div 
-            className="flex items-center gap-3 cursor-pointer select-none" 
+            className="flex items-center gap-3 cursor-pointer select-none group" 
             onClick={() => onNavigate('home')}
           >
-            <div className="relative group">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500 via-rose-600 to-amber-500 p-[2px] shadow-glow-rose group-hover:shadow-glow-amber transition-all duration-300">
-                <div className="w-full h-full bg-[#0d1017] rounded-[10px] flex items-center justify-center font-black tracking-wider text-white text-xl">
-                  IP
-                </div>
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-[#090b10] rounded-full"></div>
+            {/* Official Instaprint Logo */}
+            <div className="bg-white/95 hover:bg-white px-2.5 sm:px-3 py-1.5 rounded-2xl shadow-md border border-white/30 transition-all group-hover:scale-[1.02]">
+              <img
+                src="/logo.png"
+                alt="Instaprint - Best Printing. Best Price."
+                className="h-7 sm:h-9 w-auto object-contain"
+              />
             </div>
 
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-2xl tracking-tight text-white font-sans">
-                  INSTA<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-amber-400">PRINT</span>
-                </span>
-                <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30">
-                  STUDIO
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 flex items-center gap-1">
+            <div className="hidden xl:block">
+              <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30">
+                STUDIO
+              </span>
+              <p className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
                 <MapPin className="w-3 h-3 text-brand-400 shrink-0" />
                 <span>Baranagar, Kolkata 700036</span>
               </p>
