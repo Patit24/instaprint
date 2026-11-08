@@ -254,6 +254,11 @@ export const App: React.FC = () => {
       console.warn('Firestore orders subscription notice:', err);
     }
 
+    // 5. Automatically seed catalog to Cloud Firestore so the cloud DB is pre-populated
+    seedInitialCatalogToFirestore(SAMPLE_PRODUCTS).catch(err => {
+      console.warn('Firestore auto-seed notice:', err);
+    });
+
     return () => {
       if (unsubProducts) unsubProducts();
       if (unsubOrders) unsubOrders();
