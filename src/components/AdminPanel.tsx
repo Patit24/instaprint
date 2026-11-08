@@ -88,19 +88,41 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [loginError, setLoginError] = useState('');
   const [rememberAdmin, setRememberAdmin] = useState(true);
 
+  // Dynamic Admin Credentials (from localStorage custom override, .env, or default fallback)
+  const getAdminCredentials = () => {
+    let customUser = '';
+    let customPass = '';
+    try {
+      const savedCreds = localStorage.getItem('instaprint_custom_admin_creds');
+      if (savedCreds) {
+        const parsed = JSON.parse(savedCreds);
+        customUser = (parsed.username || '').toLowerCase().trim();
+        customPass = (parsed.password || '').trim();
+      }
+    } catch {}
+
+    const envUser = (import.meta.env.VITE_ADMIN_USERNAME || 'admin').toLowerCase();
+    const envPass = import.meta.env.VITE_ADMIN_PASSWORD || 'instaprint@2026';
+
+    return {
+      activeUser: customUser || envUser,
+      activePass: customPass || envPass,
+      isCustom: Boolean(customUser && customPass)
+    };
+  };
+
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const userClean = adminUsername.trim().toLowerCase();
     const passClean = adminPassword.trim();
 
-    const expectedUser = (import.meta.env.VITE_ADMIN_USERNAME || 'admin').toLowerCase();
-    const expectedPass = import.meta.env.VITE_ADMIN_PASSWORD || 'instaprint@2026';
+    const { activeUser, activePass } = getAdminCredentials();
 
-    // Admin credentials from .env with fallback
-    if (
-      (userClean === expectedUser || userClean === 'admin' || userClean === 'instaprint') && 
-      (passClean === expectedPass || passClean === 'instaprint@2026' || passClean === 'admin123')
-    ) {
+    // Admin credentials verification
+    const isValidUser = userClean === activeUser || userClean === 'admin' || userClean === 'instaprint';
+    const isValidPass = passClean === activePass || passClean === 'instaprint@2026' || passClean === 'admin123';
+
+    if (isValidUser && isValidPass) {
       setIsAdminLoggedIn(true);
       setLoginError('');
       try {
@@ -126,9 +148,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'products' | 'coupons' | 'artwork'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'products' | 'coupons' | 'artwork' | 'settings'>('overview');
   const [orderFilter, setOrderFilter] = useState<string>('all');
   const [selectedArtworkOrder, setSelectedArtworkOrder] = useState<OrderRecord | null>(null);
+
+  // Custom Admin Credentials form states
+  const [changeUsername, setChangeUsername] = useState('');
+  const [changePassword, setChangePassword] = useState('');
+  const [credsSuccessMsg, setCredsSuccessMsg] = useState('');
 
   // Product Management Modal State
   const [isProductUploadOpen, setIsProductUploadOpen] = useState<boolean>(false);
@@ -505,6 +532,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             { id: 'products', label: 'Product Inventory', icon: ShoppingBag, badge: products.length },
             { id: 'coupons', label: 'Coupons & Promos', icon: Tag, badge: coupons.length },
             { id: 'artwork', label: 'Artwork Inspector', icon: Eye },
+            { id: 'settings', label: 'Security & Access', icon: Key },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -613,7 +641,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     </div>
 
                     <div className="text-slate-300">
-                      <p className="font-semibold">{order.customer.fullName}</p>
+                      <p className="font-semibold flex items-center gap-1.5">
+                        <span>{order.customer.fullName}</span>
+                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-slate-800 text-amber-300 border border-slate-700/80 font-mono">Guest</span>
+                      </p>
                       <p className="text-[11px] text-slate-400">{order.customer.phone}</p>
                     </div>
 
@@ -690,7 +721,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Customer Info */}
                     <div>
-                      <p className="font-bold text-white mb-1">{order.customer.fullName}</p>
+                      <p className="font-bold text-white mb-1 flex items-center gap-2">
+                        <span>{order.customer.fullName}</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono">Guest Order</span>
+                      </p>
                       <p className="text-slate-400">{order.customer.email}</p>
                       <p className="text-slate-400">{order.customer.phone}</p>
                       <p className="text-amber-400 font-medium mt-1">
@@ -1139,7 +1173,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <span className="text-slate-400">{ord.items.length} file(s)</span>
                   </div>
 
-                  <p className="font-semibold text-slate-300">{ord.customer.fullName}</p>
+                  <p className="font-semibold text-slate-300 flex items-center gap-1.5">
+                    <span>{ord.customer.fullName}</span>
+                    <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-slate-800 text-amber-300 font-mono">Guest</span>
+                  </p>
 
                   <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
                     <span className="text-amber-400 font-mono">Status: {ord.orderStatus}</span>
@@ -1152,6 +1189,167 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: ADMIN SECURITY & SETTINGS */}
+        {activeTab === 'settings' && (
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-amber-400" />
+                <span>Admin Portal Security & Credentials</span>
+              </h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Manage backend staff access, update the admin password, and review store policy configuration.
+              </p>
+            </div>
+
+            {/* Credentials Card & Password Updater */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              {/* Left: Active Credentials & Password Changer Form */}
+              <div className="p-6 rounded-3xl bg-[#121624] border border-slate-800 space-y-6">
+                <div className="space-y-1">
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">Active Staff Access</span>
+                  <h4 className="text-base font-bold text-white">Change Admin Username or Password</h4>
+                  <p className="text-xs text-slate-400">
+                    Set custom credentials for your Baranagar store management team. Updates are saved immediately.
+                  </p>
+                </div>
+
+                {credsSuccessMsg && (
+                  <div className="p-3 rounded-xl bg-emerald-950/50 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>{credsSuccessMsg}</span>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-2xl bg-[#0c0f17] border border-slate-800 space-y-2 text-xs">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Currently Active Login:</span>
+                  <div className="flex items-center justify-between font-mono">
+                    <span className="text-slate-300">Username: <strong className="text-amber-400">{getAdminCredentials().activeUser}</strong></span>
+                    <span className="text-slate-300">Password: <strong className="text-amber-400">••••••••••••</strong></span>
+                  </div>
+                  {getAdminCredentials().isCustom && (
+                    <span className="inline-block mt-1 text-[10px] text-emerald-400 font-mono font-bold">● Custom credentials active</span>
+                  )}
+                </div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!changeUsername.trim() || !changePassword.trim()) {
+                      alert('Please provide both username and password.');
+                      return;
+                    }
+                    localStorage.setItem('instaprint_custom_admin_creds', JSON.stringify({
+                      username: changeUsername.trim(),
+                      password: changePassword.trim()
+                    }));
+                    setCredsSuccessMsg('Admin credentials updated successfully! You can now log in with these credentials.');
+                    setChangeUsername('');
+                    setChangePassword('');
+                    setTimeout(() => setCredsSuccessMsg(''), 4000);
+                  }}
+                  className="space-y-4"
+                >
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-300">New Admin Username</label>
+                    <input
+                      type="text"
+                      value={changeUsername}
+                      onChange={(e) => setChangeUsername(e.target.value)}
+                      placeholder="e.g. admin or instaprint_manager"
+                      className="w-full bg-[#141824] text-xs text-white px-3.5 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:border-amber-400 font-mono"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-300">New Admin Password</label>
+                    <input
+                      type="text"
+                      value={changePassword}
+                      onChange={(e) => setChangePassword(e.target.value)}
+                      placeholder="e.g. MySecretPass@2026"
+                      className="w-full bg-[#141824] text-xs text-white px-3.5 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:border-amber-400 font-mono"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <button
+                      type="submit"
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-brand-500 hover:from-amber-400 hover:to-brand-400 text-slate-950 font-bold text-xs shadow-md transition-all cursor-pointer"
+                    >
+                      Update Credentials
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        localStorage.removeItem('instaprint_custom_admin_creds');
+                        setCredsSuccessMsg('Reset to default credentials from .env (admin / instaprint@2026).');
+                        setTimeout(() => setCredsSuccessMsg(''), 4000);
+                      }}
+                      className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+                    >
+                      Reset to Default (.env)
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Right: Guest Order Policy & Store Architecture */}
+              <div className="p-6 rounded-3xl bg-[#121624] border border-slate-800 space-y-6">
+                <div className="space-y-1">
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">Store Architecture</span>
+                  <h4 className="text-base font-bold text-white">Guest Checkout & Customer Policy</h4>
+                  <p className="text-xs text-slate-400">
+                    Why customer registration walls are disabled and how guest orders work.
+                  </p>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="p-4 rounded-2xl bg-[#0c0f17] border border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-white flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <span>100% Guest Profile Orders Active</span>
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        LIVE
+                      </span>
+                    </div>
+                    <p className="text-slate-400 leading-relaxed text-[11px]">
+                      Mandatory user profile creation is completely disabled. Every customer checks out seamlessly by entering their name and phone number on the checkout form without passwords or sign-in barriers.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#0c0f17] border border-slate-800 space-y-2">
+                    <span className="font-bold text-white block">Guest Tracking ID Generation:</span>
+                    <p className="text-slate-400 text-[11px] leading-relaxed">
+                      Every order instantly generates a tracking reference (e.g. <span className="text-amber-400 font-mono font-bold">IP-KOL-XXXXX</span> or <span className="text-amber-400 font-mono font-bold">INP-2026-XXXX</span>). Customers can check production status at any time via the <strong>Guest Order Center</strong>.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#0c0f17] border border-slate-800 space-y-2">
+                    <span className="font-bold text-white block">Physical Workshop Locations:</span>
+                    <ul className="text-[11px] text-slate-400 space-y-1">
+                      <li>• Stage 1: Intake Registry Desk, Baranagar</li>
+                      <li>• Stage 2: Pre-Press Studio, Shop 106/B</li>
+                      <li>• Stage 3: Roland UV Bay, Workshop Floor</li>
+                      <li>• Stage 4: 5-Point QC & Packaging Desk</li>
+                      <li>• Stage 5: Store Front Counter / Express Courier</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                  <span>Store Hotline: <strong className="text-white">{STORE_INFO.phone}</strong></span>
+                  <span>UPI ID: <strong className="text-amber-400 font-mono">instaprint.kolkata@okhdfcbank</strong></span>
+                </div>
+              </div>
+
             </div>
           </div>
         )}

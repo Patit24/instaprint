@@ -21,7 +21,8 @@ import {
   Compass,
   Sun,
   Moon,
-  Lock
+  Lock,
+  Package
 } from 'lucide-react';
 import { STORE_INFO, CATEGORIES_CONFIG, MEGA_MENU_CATEGORIES, SAMPLE_PRODUCTS } from '../data/products';
 import { CartItem, AppPage, UserProfile, Product, ProductCategory } from '../types';
@@ -654,14 +655,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             
             <button
               onClick={() => {
-                if (user) onOpenAccount();
-                else onOpenAuth();
+                onOpenAccount();
                 setMobileMenuOpen(false);
               }}
               className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[#141824] border border-slate-800 text-slate-200"
             >
-              <User className="w-4 h-4 text-purple-400" />
-              <span>{user ? 'My Account' : 'Sign In'}</span>
+              <Package className="w-4 h-4 text-purple-400" />
+              <span>Guest Orders</span>
             </button>
 
             <button
