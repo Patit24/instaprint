@@ -14,7 +14,8 @@ import {
   Clock, 
   Download, 
   Copy,
-  Printer
+  Printer,
+  Lock
 } from 'lucide-react';
 import { CartItem, OrderRecord } from '../types';
 import { STORE_INFO } from '../data/products';
@@ -351,6 +352,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <span className="text-lg font-black text-amber-400 font-mono">
                   ₹{grandTotal.toLocaleString('en-IN')}
                 </span>
+              </div>
+
+              {/* Razorpay Gateway Notice */}
+              <div className="p-3 rounded-xl bg-amber-950/30 border border-amber-500/30 text-amber-300 text-xs flex items-center justify-between gap-2">
+                <span className="flex items-center gap-1.5 font-medium">
+                  <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Razorpay Payment Gateway integration in progress.</span>
+                </span>
+                <span className="text-[10px] text-slate-400">UPI QR & WhatsApp active</span>
               </div>
 
               {/* Payment Methods */}

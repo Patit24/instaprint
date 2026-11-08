@@ -473,45 +473,28 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {!hasProductImage(product) ? (
-                  <button
-                    disabled
-                    className="w-full py-3.5 rounded-xl bg-slate-800/80 border border-slate-700/80 text-slate-400 font-bold text-xs flex items-center justify-center gap-2 cursor-not-allowed opacity-80"
-                    title="Purchasing locked until store admin uploads product photos"
-                  >
-                    <Lock className="w-4 h-4 text-amber-400" />
-                    <span>Buy Locked (Photo Pending)</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleAdd}
-                    disabled={addedSuccess}
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-rose-600 text-white font-bold text-xs tracking-wide shadow-glow-rose flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.98] transition-all"
-                  >
-                    {addedSuccess ? (
-                      <>
-                        <Check className="w-4 h-4" />
-                        <span>Added to Bag!</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag className="w-4 h-4" />
-                        <span>Add to Bag (₹{(currentPrice * quantity).toLocaleString('en-IN')})</span>
-                      </>
-                    )}
-                  </button>
-                )}
-
+              <div className="space-y-2.5">
+                {/* PRIMARY WHATSAPP ENQUIRY */}
                 <a
-                  href={`https://wa.me/${STORE_INFO.whatsapp}?text=${encodeURIComponent(`Hi Instaprint Baranagar! I want to order/inquire: ${product.name} (Qty: ${quantity}, ${selectedSize || 'Standard'}). Please share sample proof.`)}`}
+                  href={`https://wa.me/${STORE_INFO.whatsapp}?text=${encodeURIComponent(`Hi Instaprint Baranagar! I want to order/inquire: ${product.name} (Qty: ${quantity}, ${selectedSize || 'Standard'}). Total: ₹${(currentPrice * quantity).toLocaleString('en-IN')}. Please share sample proof.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 transition-all hover:scale-[1.01] active:scale-[0.98]"
+                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#25D366] to-[#20bd5a] hover:from-[#20bd5a] hover:to-[#1a9f4c] text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all hover:scale-[1.01] active:scale-[0.98]"
                 >
                   <MessageCircle className="w-4 h-4 fill-slate-950 text-[#25D366]" />
-                  <span>Enquire at WhatsApp</span>
+                  <span>Enquire & Order on WhatsApp (₹{(currentPrice * quantity).toLocaleString('en-IN')})</span>
                 </a>
+
+                {/* DISABLED BUY NOW (RAZORPAY INTEGRATION PENDING) */}
+                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                  <span className="flex items-center gap-1.5 font-medium">
+                    <Lock className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Buy Now Disabled:</span>
+                  </span>
+                  <span className="text-[10px] text-amber-400 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                    Razorpay Pending
+                  </span>
+                </div>
               </div>
             </div>
 

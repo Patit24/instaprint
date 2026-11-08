@@ -371,30 +371,17 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                         <span className="hidden sm:inline">Enquire</span>
                       </a>
 
-                      {!hasProductImage(product) ? (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onSelectProduct(product);
-                          }}
-                          className="px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700/80 transition-all flex items-center gap-1 shadow-sm cursor-pointer"
-                          title="View product specifications, quantity calculator & real-time tracking"
-                        >
-                          <Eye className="w-3.5 h-3.5 text-amber-400" />
-                          <span>View</span>
-                        </button>
-                      ) : (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onSelectProduct(product);
-                          }}
-                          className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-brand-300 hover:text-white text-xs font-bold border border-brand-500/30 transition-all flex items-center gap-1 shadow-sm"
-                        >
-                          <ShoppingBag className="w-3 h-3" />
-                          <span>Order</span>
-                        </button>
-                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectProduct(product);
+                        }}
+                        className="px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700/80 transition-all flex items-center gap-1 shadow-sm cursor-pointer"
+                        title="View product specifications, quantity calculator & real-time tracking"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-amber-400" />
+                        <span>View</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -432,6 +419,25 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               Over <strong className="text-white">33+ Corporate & Gift Products</strong>
             </span>
           </div>
+        </div>
+
+        {/* Razorpay Integration Notice & WhatsApp Ordering Banner */}
+        <div className="mb-6 p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>
+              <strong>Direct WhatsApp Booking Active:</strong> Online Buy Now is temporarily disabled while Razorpay payment gateway integration is in progress. Please contact our Baranagar workshop through the <strong>WhatsApp Enquiry</strong> button on any product!
+            </span>
+          </div>
+          <a
+            href={`https://wa.me/${STORE_INFO.whatsapp}?text=${encodeURIComponent("Hi Instaprint! I would like to enquire about placing a custom printing order.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-amber-300 hover:text-white font-bold underline shrink-0 text-xs flex items-center gap-1"
+          >
+            <span>WhatsApp Hotline ({STORE_INFO.phone})</span>
+            <span>→</span>
+          </a>
         </div>
 
         {/* Category Pills Slider */}
@@ -773,7 +779,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                               <span className="hidden sm:inline">Enquire</span>
                             </a>
 
-                            {!hasProductImage(product) ? (
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -785,18 +790,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                                 <Eye className="w-3.5 h-3.5 text-amber-400" />
                                 <span>View</span>
                               </button>
-                            ) : (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onSelectProduct(product);
-                                }}
-                                className="px-3 py-1.5 rounded-lg bg-[#1a2030] hover:bg-brand-600 text-brand-300 hover:text-white text-xs font-bold border border-brand-500/30 hover:border-brand-500 transition-all flex items-center gap-1"
-                              >
-                                <ShoppingBag className="w-3.5 h-3.5" />
-                                <span>Order</span>
-                              </button>
-                            )}
                           </div>
                         </div>
                       </div>

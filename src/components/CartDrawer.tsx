@@ -8,7 +8,8 @@ import {
   ArrowRight, 
   MessageCircle, 
   Tag, 
-  Check 
+  Check,
+  Lock
 } from 'lucide-react';
 import { CartItem } from '../types';
 import { STORE_INFO } from '../data/products';
@@ -308,22 +309,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-2 pt-1">
-              <button
-                onClick={() => onProceedToCheckout(discountAmount, appliedCoupon?.code || '')}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 via-rose-600 to-amber-500 hover:from-brand-500 hover:to-amber-400 text-white font-bold text-sm shadow-glow-rose flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.98] transition-all"
-              >
-                <span>Proceed to Seamless Checkout</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
+            <div className="space-y-2.5 pt-1">
+              {/* PRIMARY WHATSAPP CHECKOUT */}
               <button
                 onClick={handleWhatsAppCheckout}
-                className="w-full py-3 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/30 text-emerald-300 font-bold text-xs flex items-center justify-center gap-2 transition-all"
+                className="w-full py-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer"
               >
-                <MessageCircle className="w-4 h-4 text-emerald-400" />
-                <span>Instant Order via WhatsApp</span>
+                <MessageCircle className="w-4 h-4 fill-slate-950 text-[#25D366]" />
+                <span>Complete Order on WhatsApp</span>
               </button>
+
+              {/* DISABLED ONLINE BUY BUTTON (RAZORPAY INTEGRATION PENDING) */}
+              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <span className="flex items-center gap-1.5 font-medium">
+                  <Lock className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Online Razorpay Gateway:</span>
+                </span>
+                <span className="text-[10px] text-amber-400 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                  Integration Pending
+                </span>
+              </div>
             </div>
 
             <p className="text-[10px] text-center text-slate-500">

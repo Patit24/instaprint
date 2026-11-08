@@ -13,7 +13,8 @@ import {
   Palette,
   Layers,
   Type,
-  FileUp
+  FileUp,
+  Lock
 } from 'lucide-react';
 import { STORE_INFO, SAMPLE_TEMPLATES } from '../data/products';
 import { CartItem } from '../types';
@@ -635,32 +636,24 @@ export const LiveCustomizer: React.FC<LiveCustomizerProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                <button
-                  onClick={handleAddToCart}
-                  disabled={addedSuccess}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-brand-600 via-rose-600 to-amber-500 hover:from-brand-500 hover:to-amber-400 text-white font-bold text-xs shadow-glow-rose hover:scale-[1.01] active:scale-[0.98] transition-all"
-                >
-                  {addedSuccess ? (
-                    <>
-                      <Check className="w-4 h-4" />
-                      <span>Added to Bag!</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingBag className="w-4 h-4" />
-                      <span>Add to Bag</span>
-                    </>
-                  )}
-                </button>
-
+              <div className="space-y-2 pt-1">
                 <button
                   onClick={handleWhatsAppOrder}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 font-bold text-xs transition-all"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-950/30 transition-all cursor-pointer"
                 >
-                  <MessageCircle className="w-4 h-4 text-emerald-400" />
-                  <span>Order on WhatsApp</span>
+                  <MessageCircle className="w-4 h-4 fill-slate-950 text-[#25D366]" />
+                  <span>Send Custom Order to WhatsApp</span>
                 </button>
+
+                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                  <span className="flex items-center gap-1.5 font-medium">
+                    <Lock className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Online Checkout (Razorpay):</span>
+                  </span>
+                  <span className="text-[10px] text-amber-400 font-mono font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                    Integration Pending
+                  </span>
+                </div>
               </div>
             </div>
 
