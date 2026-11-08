@@ -166,10 +166,23 @@ html.light .bg-\[\#0e121e\],
 html.light .bg-\[\#111420\],
 html.light .bg-\[\#111422\],
 html.light .bg-\[\#141826\],
+html.light .bg-\[\#181d2f\],
 html.light .bg-\[\#0c0f18\]\/95 {
   background-color: #ffffff !important;
   border-color: #e2e8f0 !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Gradient card background resets in Light Mode */
+html.light [class*="from-\[\#121624\]"],
+html.light [class*="from-\[\#151a2d\]"],
+html.light [class*="from-\[\#0e121e\]"],
+html.light [class*="from-\[\#0c0f17\]"],
+html.light [class*="from-\[\#14192b\]"],
+html.light [class*="from-\[\#181d2f\]"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
 }
 
 /* Card hover and subtle interactive backgrounds */

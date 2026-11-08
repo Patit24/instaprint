@@ -328,22 +328,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             )}
 
             {/* Customization Options: Upload Logo / Photo & Custom Text */}
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-[#121624] to-[#151a2d] border border-brand-500/30 space-y-3.5">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <div className="p-4 rounded-2xl bg-white dark:bg-[#121624] border border-slate-200 dark:border-brand-500/30 shadow-sm dark:shadow-md space-y-3.5">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
                 <div className="flex items-center gap-2">
-                  <Upload className="w-4 h-4 text-brand-400" />
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                  <Upload className="w-4 h-4 text-brand-500 dark:text-brand-400" />
+                  <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                     Customization & Print Details
                   </h3>
                 </div>
-                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-mono">
+                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/20 font-mono">
                   Free Digital Proof
                 </span>
               </div>
 
               {/* Upload Logo or Photo */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-300 block">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-300 block">
                   1. Upload Logo or Photo (Optional)
                 </label>
                 <input
@@ -355,25 +355,25 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 />
 
                 {uploadedPhotoUrl ? (
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/90 border border-brand-500/50">
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-brand-500/40 dark:border-brand-500/50 shadow-sm">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <img
                         src={uploadedPhotoUrl}
                         alt="Uploaded preview"
-                        className="w-10 h-10 object-contain rounded-lg bg-black/40 border border-slate-700 p-0.5 shrink-0"
+                        className="w-10 h-10 object-contain rounded-lg bg-white dark:bg-black/40 border border-slate-200 dark:border-slate-700 p-0.5 shrink-0"
                       />
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-white truncate max-w-[160px] sm:max-w-xs">
+                        <p className="text-xs font-bold text-slate-900 dark:text-white truncate max-w-[160px] sm:max-w-xs">
                           {uploadedLogoName || "Uploaded file"}
                         </p>
-                        <p className="text-[10px] text-emerald-400 font-mono">Ready for print proof</p>
+                        <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">Ready for print proof</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors"
+                        className="px-2 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors"
                       >
                         Change
                       </button>
@@ -384,7 +384,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           setUploadedLogoName('');
                           if (fileInputRef.current) fileInputRef.current.value = '';
                         }}
-                        className="p-1 rounded-lg text-rose-400 hover:bg-rose-500/10 transition-colors"
+                        className="p-1 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors"
                         title="Remove uploaded image"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -395,10 +395,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full p-3 rounded-xl border border-dashed border-slate-700 hover:border-brand-500/70 bg-slate-900/50 hover:bg-slate-900/80 transition-all flex items-center justify-center gap-2 group text-center cursor-pointer"
+                    className="w-full p-3 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-brand-500 dark:hover:border-brand-500/70 bg-slate-50/70 hover:bg-slate-100/90 dark:bg-slate-900/50 dark:hover:bg-slate-900/80 transition-all flex items-center justify-center gap-2 group text-center cursor-pointer"
                   >
-                    <Upload className="w-4 h-4 text-slate-400 group-hover:text-brand-400" />
-                    <span className="text-xs font-bold text-slate-200 group-hover:text-white">
+                    <Upload className="w-4 h-4 text-slate-500 dark:text-slate-400 group-hover:text-brand-500 dark:group-hover:text-brand-400" />
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-brand-600 dark:group-hover:text-white">
                       Click to upload Logo / Artwork / Photo
                     </span>
                   </button>
@@ -407,7 +407,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
               {/* Custom Text / Business Inscription */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-300 block">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-300 block">
                   2. Custom Text / Business Details (Optional)
                 </label>
                 <input
@@ -415,13 +415,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   value={customText}
                   onChange={(e) => setCustomText(e.target.value)}
                   placeholder="e.g. Hexa Technologies • +91 98765 43210"
-                  className="w-full bg-[#141824] text-xs text-white px-3 py-2 rounded-xl border border-slate-700 focus:border-brand-500 focus:outline-none"
+                  className="w-full bg-slate-50 dark:bg-[#141824] text-xs text-slate-900 dark:text-white px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 focus:border-brand-500 focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors"
                 />
               </div>
 
               {/* Special Instructions */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-300 block">
+                <label className="text-xs font-bold text-slate-800 dark:text-slate-300 block">
                   3. Printing Instructions / Placement Notes (Optional)
                 </label>
                 <textarea
@@ -429,7 +429,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   onChange={(e) => setCustomInstructions(e.target.value)}
                   rows={2}
                   placeholder="e.g. Center logo, send WhatsApp preview before printing..."
-                  className="w-full bg-[#141824] text-xs text-white px-3 py-1.5 rounded-xl border border-slate-700 focus:border-brand-500 focus:outline-none resize-none"
+                  className="w-full bg-slate-50 dark:bg-[#141824] text-xs text-slate-900 dark:text-white px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 focus:border-brand-500 focus:outline-none resize-none placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors"
                 />
               </div>
             </div>
