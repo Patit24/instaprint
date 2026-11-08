@@ -22,7 +22,7 @@ import {
   Sun,
   Moon
 } from 'lucide-react';
-import { STORE_INFO, CATEGORIES_CONFIG, MEGA_MENU_CATEGORIES } from '../data/products';
+import { STORE_INFO, CATEGORIES_CONFIG, MEGA_MENU_CATEGORIES, SAMPLE_PRODUCTS } from '../data/products';
 import { CartItem, AppPage, UserProfile, Product, ProductCategory } from '../types';
 
 interface NavbarProps {
@@ -83,13 +83,63 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const handleItemClick = (item: { name: string; category: ProductCategory; subCategory?: string }) => {
-    if (products && onSelectProduct) {
+    if (onSelectProduct) {
       const cleanItemName = item.name.toLowerCase().trim();
-      const found = products.find(p => 
+      const slug = cleanItemName.replace(/[^a-z0-9]+/g, '-');
+      const allAvailable = [
+        ...(products || []),
+        ...(SAMPLE_PRODUCTS || [])
+      ];
+
+      // 1. Direct name or slug match
+      let found = allAvailable.find(p => 
         p.name.toLowerCase().trim() === cleanItemName ||
-        p.id.toLowerCase() === cleanItemName.replace(/[^a-z0-9]+/g, '-') ||
-        p.name.toLowerCase().includes(cleanItemName)
+        p.id.toLowerCase() === `${item.category}-${slug}` ||
+        p.id.toLowerCase().endsWith(slug) ||
+        p.slug === slug
       );
+
+      // 2. Substring matching
+      if (!found) {
+        found = allAvailable.find(p => 
+          p.name.toLowerCase().includes(cleanItemName) ||
+          cleanItemName.includes(p.name.toLowerCase())
+        );
+      }
+
+      // 3. Guaranteed distinct product creation if not already in catalog
+      if (!found) {
+        found = {
+          id: `${item.category}-${slug}`,
+          name: item.name,
+          slug,
+          category: item.category,
+          subCategory: item.subCategory || 'Custom Prints',
+          price: 199,
+          originalPrice: 299,
+          rating: 4.9,
+          reviewsCount: 28,
+          unitLabel: 'pcs',
+          minQuantity: 5,
+          bulkPricingBadge: `BUY 5 @ Rs.199`,
+          shortDescription: `${item.name} custom crafted with precision at Instaprint Baranagar Studio.`,
+          description: `Custom ${item.name} printed on high-grade commercial archival stock with rich color fidelity. Ready for store pickup or express Kolkata courier dispatch.`,
+          image: '',
+          gallery: [],
+          turnaround: '24-48 Hours Express Dispatch',
+          materials: 'Commercial 350-450 GSM Stock / Industrial UV Inks',
+          features: [
+            'Ultra-vibrant 1200 DPI commercial offset/UV print',
+            'Full personalization with logo & custom typography',
+            'Free digital pre-press proof on WhatsApp (082406 38595)',
+            'Store counter pickup available at Shop 106/B Baranagar'
+          ],
+          inStock: true,
+          allowCustomPhoto: true,
+          allowCustomText: true
+        };
+      }
+
       if (found) {
         onSelectProduct(found);
         setActiveMegaMenuId(null);
@@ -97,6 +147,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         return;
       }
     }
+
     onSelectCategory(item.category);
     onNavigate('shop', item.category);
     setActiveMegaMenuId(null);

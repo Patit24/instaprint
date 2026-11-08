@@ -122,7 +122,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'stamps-ink',
     label: 'Stamps and Ink',
     icon: 'Stamp',
-    count: 5,
+    count: 7,
     subcategories: ['Self Inking Stamps', 'Basic Rubber Stamps', 'Pocket Stamps', 'Name Stamps', 'Paper Embosser'],
     bannerImage: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=1200&q=80',
     description: 'Official self-inking stamps, company seal embossers, and pocket stamps with instant refill ink.'
@@ -131,7 +131,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'letterheads-envelopes',
     label: 'Letterheads & Envelopes',
     icon: 'FileText',
-    count: 2,
+    count: 8,
     subcategories: ['Executive A4 Letterheads', 'Self-Seal Corporate Envelopes', 'Window Envelopes'],
     bannerImage: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=1200&q=80',
     description: 'Alabaster bond stationery for legal, medical, and corporate correspondence.'
@@ -140,7 +140,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'flyers-brochures',
     label: 'Flyers & Brochures',
     icon: 'Layers',
-    count: 2,
+    count: 12,
     subcategories: ['Tri-Fold Pamphlets', 'Bi-Fold Company Profiles', 'A5 Promotional Leaflets'],
     bannerImage: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80',
     description: 'Vibrant 170-300 GSM marketing collaterals with clean machine creasing.'
@@ -149,25 +149,16 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'posters-banners',
     label: 'Posters & Banners',
     icon: 'Flag',
-    count: 2,
+    count: 20,
     subcategories: ['Aluminium Roll-Up Standees', 'Heavy Flex Banners', 'Glossy Photo Posters'],
     bannerImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
     description: 'Event standees, showroom backdrops, and exhibition promotional displays.'
   },
   {
-    id: 'stickers-labels',
-    label: 'Stickers & Labels',
-    icon: 'Zap',
-    count: 6,
-    subcategories: ['Sheet Stickers', 'Packaging Labels', 'Custom Die-Cut', 'Transparent Clear', 'Branded Security Tape'],
-    bannerImage: 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?auto=format&fit=crop&w=1200&q=80',
-    description: 'Waterproof, oil-proof, and outdoor vinyl stickers contour cut to any shape.'
-  },
-  {
     id: 'packaging-boxes',
     label: 'Packaging & Boxes',
     icon: 'Package',
-    count: 2,
+    count: 20,
     subcategories: ['Full-Print Corrugated Mailers', 'Sweet & Food Boxes', 'Rigid Gift Hampers'],
     bannerImage: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=1200&q=80',
     description: 'Elevate your unboxing experience with E-flute self-locking branded boxes.'
@@ -176,7 +167,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'custom-tshirts',
     label: 'Custom T-Shirts',
     icon: 'Shirt',
-    count: 3,
+    count: 22,
     subcategories: ['Heavyweight 240 GSM Tees', 'Honeycomb Pique Polos', 'Multi-Location Fleets'],
     bannerImage: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1200&q=80',
     description: '100% bio-washed combed cotton with stretchable high-definition DTF graphics.'
@@ -185,7 +176,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'caps-bags',
     label: 'Caps & Bags',
     icon: 'ShoppingBag',
-    count: 4,
+    count: 25,
     subcategories: ['Embroidered Laptop Bags', 'Harissons Nemesis', 'American Tourister TROT', 'Twill Caps'],
     bannerImage: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1200&q=80',
     description: 'Durable employee welcome backpacks and corporate headwear with Madeira embroidery.'
@@ -194,7 +185,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'mugs-bottles',
     label: 'Mugs & Bottles',
     icon: 'Coffee',
-    count: 2,
+    count: 33,
     subcategories: ['Magic Heat Reveal Mugs', 'Matt Black Steel Bottles', 'Ceramic Desktop Mugs'],
     bannerImage: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1200&q=80',
     description: 'Insulated vacuum thermal flasks and color-changing ceramic photo mugs.'
@@ -203,7 +194,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'diaries-notebooks',
     label: 'Diaries & Notebooks',
     icon: 'BookOpen',
-    count: 1,
+    count: 28,
     subcategories: ['PU Leather Hardbound', 'Elastic Pen Holder', 'Corporate Planners'],
     bannerImage: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80',
     description: 'Natural 80 GSM cream paper notebooks with magnetic clasps and blind debossing.'
@@ -212,7 +203,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'id-cards-lanyards',
     label: 'ID Cards & Lanyards',
     icon: 'CreditCard',
-    count: 1,
+    count: 6,
     subcategories: ['20mm Satin Lanyards', 'PVC RFID Cards', 'Retractable Badges'],
     bannerImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
     description: 'Silky smooth sublimation neck lanyards with heavy-duty metal dog-hooks.'
@@ -221,7 +212,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'invitations-cards',
     label: 'Invitations & Cards',
     icon: 'Mail',
-    count: 2,
+    count: 36,
     subcategories: ['Wedding Suites', 'Festive Greeting Cards', 'Round Tablecloths'],
     bannerImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80',
     description: 'Gold foil invitations, celebratory announcements, and banquet exhibition spreads.'
@@ -230,7 +221,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'promotional-gifts',
     label: 'Promotional Gifts & Keepsakes',
     icon: 'Gift',
-    count: 4,
+    count: 18,
     subcategories: ['Romantic LED Silhouette Frames', 'Spotify Music Plaques', 'Gallery Canvas', 'Photo Albums'],
     bannerImage: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1200&q=80',
     description: 'Baranagar studio signature optical acrylic nightlights, moon lamps, and wall art.'
@@ -239,7 +230,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'rubber-stamps',
     label: 'Rubber Stamps & Seals',
     icon: 'Stamp',
-    count: 3,
+    count: 7,
     subcategories: ['Self-Inking Rectangular', 'Round Company Seals', 'Pocket Mobile Stamps', 'Date & Numberer Stamps'],
     bannerImage: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=1200&q=80',
     description: 'Instant self-inking stamps for bank deposits, doctor prescriptions, GST approvals, and official company seals.'
@@ -248,7 +239,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'bill-books',
     label: 'Bill Books & Invoices',
     icon: 'Receipt',
-    count: 3,
+    count: 6,
     subcategories: ['Duplicate NCR Books', 'Triplicate Tax Invoices', 'Cash Receipts & Vouchers', 'Delivery Challans'],
     bannerImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
     description: 'Carbonless multi-copy numbered invoice books (White, Pink, Yellow) custom-printed with your business GST details.'
@@ -257,7 +248,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'calendars',
     label: 'Desk & Wall Calendars',
     icon: 'Calendar',
-    count: 3,
+    count: 16,
     subcategories: ['Spiral Desk Tent Calendars', '12-Page Hanging Wall Calendars', 'Laminated Year Planners', 'Pocket Calendars'],
     bannerImage: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=1200&q=80',
     description: 'Keep your brand visible 365 days a year with personalized company desk calendars and high-gloss wall planners.'
@@ -266,7 +257,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'engraved-pens',
     label: 'Engraved Metal Pens',
     icon: 'PenTool',
-    count: 3,
+    count: 60,
     subcategories: ['Parker Vector Laser Engraved', 'Heavy Metal Stylus Pens', 'Parker Jotter Luxury Gift Sets', 'Executive Rollerballs'],
     bannerImage: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=1200&q=80',
     description: 'Premium metallic and branded Parker® pens laser etched with individual names, designations, and corporate emblems.'
@@ -275,7 +266,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'office-accessories',
     label: 'Office & Tech Accessories',
     icon: 'MousePointer',
-    count: 3,
+    count: 13,
     subcategories: ['Precision Fabric Mousepads', 'Acrylic & Wooden Coasters', 'Laser Engraved Keychains', 'Mobile Stands'],
     bannerImage: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1200&q=80',
     description: 'Enhance desks with custom dye-sublimated non-slip mousepads, heat-resistant branded coasters, and alloy keyrings.'
@@ -284,7 +275,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'certificates',
     label: 'Certificates & Award Folders',
     icon: 'Award',
-    count: 2,
+    count: 6,
     subcategories: ['Gold Foil Border Certificates', 'Velvet Presentation Folders', 'Hackathon Participation Awards', 'Diploma Holders'],
     bannerImage: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=80',
     description: 'Honor achievements with heavy 300 GSM archival parchment certificates featuring embossed gold foil crests and velvet holders.'
@@ -293,7 +284,7 @@ export const CATEGORIES_CONFIG: CategoryMeta[] = [
     id: 'badges-nameplates',
     label: 'Employee Badges & Plates',
     icon: 'BadgeCheck',
-    count: 2,
+    count: 6,
     subcategories: ['Magnetic Metallic Badges', 'Acrylic Desk Nameplates', 'Pin Badges', 'Doctor & Executive Badges'],
     bannerImage: 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?auto=format&fit=crop&w=1200&q=80',
     description: 'Professional clothing-safe magnetic metallic employee tags and optical bevel-edge acrylic desk nameplates.'

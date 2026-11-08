@@ -22,7 +22,8 @@ import {
   Camera,
   Lock,
   AlertCircle,
-  MessageCircle
+  MessageCircle,
+  Eye
 } from 'lucide-react';
 import { SAMPLE_PRODUCTS, CATEGORIES_CONFIG, STORE_INFO } from '../data/products';
 import { Product } from '../types';
@@ -84,10 +85,92 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     }
   };
 
+  // Smart category matcher to support both primary lines and specialized sub-collections
+  const matchesCategory = (product: Product, selectedCat: string): boolean => {
+    if (selectedCat === 'all') return true;
+    if (product.category === selectedCat) return true;
+
+    const name = product.name.toLowerCase();
+    const sub = product.subCategory?.toLowerCase() || '';
+
+    if (selectedCat === 'custom-tshirts') {
+      return product.category === 'clothing-caps-bags' && 
+        (sub.includes('t-shirt') || name.includes('t-shirt') || name.includes('tee') || name.includes('polo'));
+    }
+    if (selectedCat === 'rubber-stamps' || selectedCat === 'stamps-ink') {
+      return product.category === 'stamps-ink' || product.category === 'rubber-stamps' || name.includes('stamp') || name.includes('seal');
+    }
+    if (selectedCat === 'bill-books') {
+      return (product.category === 'stationery-notebooks' || product.category === 'bill-books') &&
+        (sub.includes('invoice') || sub.includes('bill') || name.includes('bill') || name.includes('invoice') || name.includes('voucher'));
+    }
+    if (selectedCat === 'calendars') {
+      return (product.category === 'calendars-diaries' || product.category === 'calendars') &&
+        (sub.includes('calendar') || name.includes('calendar'));
+    }
+    if (selectedCat === 'diaries-notebooks') {
+      return (product.category === 'calendars-diaries' || product.category === 'stationery-notebooks' || product.category === 'diaries-notebooks') &&
+        (sub.includes('diar') || sub.includes('notebook') || name.includes('diary') || name.includes('notebook'));
+    }
+    if (selectedCat === 'engraved-pens' || selectedCat === 'pens') {
+      return product.category === 'pens' || product.category === 'engraved-pens' || name.includes('pen');
+    }
+    if (selectedCat === 'packaging-boxes') {
+      return (product.category === 'stickers-labels' || product.category === 'packaging-boxes') &&
+        (sub.includes('packaging') || sub.includes('box') || name.includes('box') || name.includes('packaging'));
+    }
+    if (selectedCat === 'caps-bags') {
+      return product.category === 'clothing-caps-bags' &&
+        (sub.includes('bag') || sub.includes('cap') || name.includes('bag') || name.includes('cap'));
+    }
+    if (selectedCat === 'mugs-bottles') {
+      return (product.category === 'drinkware' || product.category === 'mugs-albums-gifts') &&
+        (name.includes('mug') || name.includes('bottle') || name.includes('sipper') || name.includes('flask'));
+    }
+    if (selectedCat === 'letterheads-envelopes') {
+      return product.category === 'stationery-notebooks' &&
+        (name.includes('letterhead') || name.includes('envelope'));
+    }
+    if (selectedCat === 'flyers-brochures') {
+      return product.category === 'signs-posters-marketing' &&
+        (name.includes('flyer') || name.includes('brochure') || name.includes('leaflet') || name.includes('pamphlet') || name.includes('profile') || name.includes('sheet') || name.includes('card'));
+    }
+    if (selectedCat === 'posters-banners') {
+      return product.category === 'signs-posters-marketing' &&
+        (name.includes('poster') || name.includes('banner') || name.includes('standee') || name.includes('sign'));
+    }
+    if (selectedCat === 'id-cards-lanyards') {
+      return product.category === 'stationery-notebooks' &&
+        (name.includes('id card') || name.includes('lanyard') || name.includes('badge'));
+    }
+    if (selectedCat === 'invitations-cards') {
+      return (product.category === 'stationery-notebooks' || product.category === 'visiting-cards') &&
+        (name.includes('invitation') || name.includes('announcement') || name.includes('card'));
+    }
+    if (selectedCat === 'promotional-gifts') {
+      return (product.category === 'mugs-albums-gifts' || product.category === 'stationery-notebooks') &&
+        (name.includes('gift') || name.includes('hamper') || name.includes('frame') || name.includes('plaque'));
+    }
+    if (selectedCat === 'office-accessories') {
+      return (product.category === 'stationery-notebooks' || product.category === 'mugs-albums-gifts') &&
+        (name.includes('mouse pad') || name.includes('coaster') || name.includes('keychain') || name.includes('pen drive'));
+    }
+    if (selectedCat === 'certificates') {
+      return product.category === 'stationery-notebooks' &&
+        (name.includes('certificate') || name.includes('award') || name.includes('folder'));
+    }
+    if (selectedCat === 'badges-nameplates') {
+      return (product.category === 'stationery-notebooks' || product.category === 'visiting-cards') &&
+        (name.includes('badge') || name.includes('nameplate') || name.includes('card holder'));
+    }
+
+    return false;
+  };
+
   // Filtered list for category or search view
   const filteredProducts = useMemo(() => {
     return activeCatalog.filter((product) => {
-      if (selectedCategory !== 'all' && product.category !== selectedCategory) {
+      if (!matchesCategory(product, selectedCategory)) {
         return false;
       }
       if (selectedSubCategory !== 'all' && product.subCategory !== selectedSubCategory) {
@@ -116,12 +199,31 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     });
   }, [activeCatalog, selectedCategory, selectedSubCategory, only24h, searchQuery, sortBy]);
 
-  // Section Carousels Groups (from screenshots)
-  const popularSection = useMemo(() => activeCatalog.filter(p => p.sectionCollection === 'popular'), [activeCatalog]);
-  const trendingSection = useMemo(() => activeCatalog.filter(p => p.sectionCollection === 'trending'), [activeCatalog]);
-  const labelsPackagingSection = useMemo(() => activeCatalog.filter(p => p.sectionCollection === 'labels-packaging'), [activeCatalog]);
-  const exploreMoreSection = useMemo(() => activeCatalog.filter(p => p.sectionCollection === 'explore-more'), [activeCatalog]);
-  const newArrivalsSection = useMemo(() => activeCatalog.filter(p => p.sectionCollection === 'new-arrivals'), [activeCatalog]);
+  // Section Carousels Groups - Pulling rich distinct products for all rows
+  const popularSection = useMemo(() => {
+    const list = activeCatalog.filter(p => p.sectionCollection === 'popular' || p.category === 'visiting-cards' || p.category === 'clothing-caps-bags');
+    return list.slice(0, 12);
+  }, [activeCatalog]);
+
+  const trendingSection = useMemo(() => {
+    const list = activeCatalog.filter(p => p.sectionCollection === 'trending' || p.category === 'custom-winterwear' || p.category === 'drinkware' || p.category === 'pens');
+    return (list.length > 0 ? list : activeCatalog.slice(12, 24)).slice(0, 12);
+  }, [activeCatalog]);
+
+  const labelsPackagingSection = useMemo(() => {
+    const list = activeCatalog.filter(p => p.category === 'stickers-labels' || p.subCategory?.toLowerCase().includes('packaging') || p.subCategory?.toLowerCase().includes('sticker') || p.subCategory?.toLowerCase().includes('box'));
+    return (list.length > 0 ? list : activeCatalog.slice(24, 36)).slice(0, 12);
+  }, [activeCatalog]);
+
+  const exploreMoreSection = useMemo(() => {
+    const list = activeCatalog.filter(p => p.category === 'stationery-notebooks' || p.category === 'calendars-diaries' || p.category === 'signs-posters-marketing');
+    return (list.length > 0 ? list : activeCatalog.slice(36, 48)).slice(0, 12);
+  }, [activeCatalog]);
+
+  const newArrivalsSection = useMemo(() => {
+    const list = activeCatalog.filter(p => p.badge === 'NEW' || p.tag === 'New Addition' || p.sectionCollection === 'new-arrivals');
+    return (list.length > 0 ? list : activeCatalog.slice(48, 60)).slice(0, 12);
+  }, [activeCatalog]);
 
   // Horizontal Carousel Component
   const ProductCarousel = ({ title, subtitle, products }: { title: string; subtitle?: string; products: Product[] }) => {
@@ -273,13 +375,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert(`"${product.name}" is currently awaiting official product photography from the store admin. You can enquire directly on WhatsApp with the green button!`);
+                            onSelectProduct(product);
                           }}
-                          className="px-2.5 py-1.5 rounded-lg bg-slate-800/70 hover:bg-slate-800 text-slate-400 hover:text-slate-300 text-xs font-semibold border border-slate-700/60 transition-all flex items-center gap-1 cursor-not-allowed opacity-80"
-                          title="Buy button is disabled until admin uploads product image"
+                          className="px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700/80 transition-all flex items-center gap-1 shadow-sm cursor-pointer"
+                          title="View product specifications, quantity calculator & real-time tracking"
                         >
-                          <Lock className="w-3 h-3 text-amber-400" />
-                          <span>Photo Pending</span>
+                          <Eye className="w-3.5 h-3.5 text-amber-400" />
+                          <span>View</span>
                         </button>
                       ) : (
                         <button
@@ -675,13 +777,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  alert(`"${product.name}" is currently awaiting official product photography from the store admin. You can enquire directly on WhatsApp with the green button!`);
+                                  onSelectProduct(product);
                                 }}
-                                className="px-2.5 py-1.5 rounded-lg bg-slate-800/70 hover:bg-slate-800 text-slate-400 hover:text-slate-300 text-xs font-semibold border border-slate-700/60 transition-all flex items-center gap-1 cursor-not-allowed opacity-80"
-                                title="Buy button is disabled until admin uploads product image"
+                                className="px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold border border-slate-700/80 transition-all flex items-center gap-1 shadow-sm cursor-pointer"
+                                title="View product specifications, quantity calculator & real-time tracking"
                               >
-                                <Lock className="w-3 h-3 text-amber-400" />
-                                <span>Photo Pending</span>
+                                <Eye className="w-3.5 h-3.5 text-amber-400" />
+                                <span>View</span>
                               </button>
                             ) : (
                               <button
