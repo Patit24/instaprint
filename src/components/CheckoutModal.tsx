@@ -685,7 +685,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   Order Successfully Placed!
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  Thank you, <strong className="text-white">{confirmedOrder.customer.fullName}</strong>. Our Baranagar studio has queued your print.
+                  Thank you, <strong className="text-white">{confirmedOrder.customer?.fullName || 'Customer'}</strong>. Our Baranagar studio has queued your print.
                 </p>
               </div>
 
@@ -724,14 +724,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <div>
                     <span className="text-[11px] text-slate-500">Pickup / Delivery:</span>
                     <p className="font-medium">
-                      {confirmedOrder.customer.deliveryMethod === 'store-pickup'
+                      {confirmedOrder.customer?.deliveryMethod === 'store-pickup'
                         ? 'Shop 106/B, Gopal Lal Tagore Rd, Baranagar'
-                        : `${confirmedOrder.customer.addressLine1}, Kolkata`}
+                        : `${confirmedOrder.customer?.addressLine1 || 'Kolkata'}, Kolkata`}
                     </p>
                   </div>
                   <div>
                     <span className="text-[11px] text-slate-500">Contact Number:</span>
-                    <p className="font-medium font-mono">{confirmedOrder.customer.phone}</p>
+                    <p className="font-medium font-mono">{confirmedOrder.customer?.phone || ''}</p>
                   </div>
                 </div>
 

@@ -721,14 +721,14 @@ export const CustomerAccount: React.FC<CustomerAccountProps> = ({
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
                 <p className="font-bold text-slate-500 uppercase tracking-wider">Billed To:</p>
-                <p className="font-bold text-sm text-slate-900 mt-0.5">{selectedInvoiceOrder.customer.fullName}</p>
-                <p className="text-slate-600">{selectedInvoiceOrder.customer.phone}</p>
-                <p className="text-slate-600">{selectedInvoiceOrder.customer.email}</p>
+                <p className="font-bold text-sm text-slate-900 mt-0.5">{selectedInvoiceOrder.customer?.fullName || 'Customer'}</p>
+                <p className="text-slate-600">{selectedInvoiceOrder.customer?.phone || ''}</p>
+                <p className="text-slate-600">{selectedInvoiceOrder.customer?.email || ''}</p>
               </div>
               <div className="text-right">
                 <p className="font-bold text-slate-500 uppercase tracking-wider">Delivery Mode:</p>
                 <p className="font-bold text-sm text-slate-900 mt-0.5">
-                  {selectedInvoiceOrder.customer.deliveryMethod === 'store-pickup' ? 'Baranagar Store Pickup' : 'Express Courier'}
+                  {selectedInvoiceOrder.customer?.deliveryMethod === 'store-pickup' ? 'Baranagar Store Pickup' : 'Express Courier'}
                 </p>
                 <p className="text-slate-600">Status: {selectedInvoiceOrder.paymentStatus.toUpperCase()}</p>
               </div>

@@ -69,7 +69,7 @@ export const GuestOrderHub: React.FC<GuestOrderHubProps> = ({
     const found = allOrders.find(
       o => o.orderId.toUpperCase() === query ||
            (o.trackingNumber && o.trackingNumber.toUpperCase() === query) ||
-           o.customer.phone.replace(/\D/g, '').includes(query.replace(/\D/g, ''))
+           (o.customer?.phone && o.customer.phone.replace(/\D/g, '').includes(query.replace(/\D/g, '')))
     );
 
     if (found) {
@@ -435,9 +435,9 @@ export const GuestOrderHub: React.FC<GuestOrderHubProps> = ({
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
                 <p className="font-bold text-slate-900">Billed To (Guest Customer):</p>
-                <p className="text-slate-700">{selectedInvoiceOrder.customer.fullName}</p>
-                <p className="text-slate-600">{selectedInvoiceOrder.customer.phone}</p>
-                <p className="text-slate-600">{selectedInvoiceOrder.customer.city || 'Kolkata'}, {selectedInvoiceOrder.customer.pincode}</p>
+                <p className="text-slate-700">{selectedInvoiceOrder.customer?.fullName || 'Valued Customer'}</p>
+                <p className="text-slate-600">{selectedInvoiceOrder.customer?.phone || STORE_INFO.phone}</p>
+                <p className="text-slate-600">{selectedInvoiceOrder.customer?.city || 'Kolkata'}, {selectedInvoiceOrder.customer?.pincode || '700036'}</p>
               </div>
               <div className="text-right">
                 <p className="font-bold text-slate-900">Invoice Details:</p>

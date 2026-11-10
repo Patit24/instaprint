@@ -30,8 +30,22 @@ export const TrackOrderModal: React.FC<TrackOrderModalProps> = ({ isOpen, onClos
   const [searchQuery, setSearchQuery] = useState('');
   const [searchedOrder, setSearchedOrder] = useState<OrderRecord | null>(() => {
     try {
-      const orders: OrderRecord[] = JSON.parse(localStorage.getItem('instaprint_orders') || '[]');
-      return orders.length > 0 ? orders[0] : null;
+      const orders: any[] = JSON.parse(localStorage.getItem('instaprint_orders') || '[]');
+      if (orders.length > 0) {
+        const o = orders[0];
+        return {
+          ...o,
+          customer: o?.customer || {
+            fullName: o?.customerName || 'Customer',
+            phone: o?.customerPhone || '082406 38595',
+            email: o?.customerEmail || 'customer@instaprint.com',
+            deliveryMethod: o?.deliveryMethod || 'store-pickup',
+            city: 'Kolkata',
+            pincode: '700036'
+          }
+        };
+      }
+      return null;
     } catch {
       return null;
     }
@@ -53,7 +67,9 @@ export const TrackOrderModal: React.FC<TrackOrderModalProps> = ({ isOpen, onClos
     try {
       const dbOrders = await dbGetAllOrders();
       const match = dbOrders.find(
-        (o) => o.orderId.toUpperCase() === q || o.trackingNumber.toUpperCase() === q || o.customer.phone.includes(q)
+        (o) => o.orderId.toUpperCase() === q || 
+               (o.trackingNumber && o.trackingNumber.toUpperCase() === q) || 
+               (o.customer?.phone && o.customer.phone.includes(q))
       );
 
       if (match) {

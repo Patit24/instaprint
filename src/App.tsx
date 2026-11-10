@@ -96,11 +96,26 @@ export const App: React.FC = () => {
     return [];
   });
 
-  // Orders state (starts clean with no demo data)
+  // Orders state (starts clean with no demo data, sanitizes corrupted objects)
   const [orders, setOrders] = useState<OrderRecord[]>(() => {
     try {
       const saved = localStorage.getItem('instaprint_orders');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map((o: any) => ({
+            ...o,
+            customer: o?.customer || {
+              fullName: o?.customerName || 'Customer',
+              phone: o?.customerPhone || '082406 38595',
+              email: o?.customerEmail || 'orders@instaprintkolkata.com',
+              deliveryMethod: o?.deliveryMethod || 'store-pickup',
+              city: 'Kolkata',
+              pincode: '700036'
+            }
+          }));
+        }
+      }
     } catch {
       // fallback
     }

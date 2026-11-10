@@ -644,10 +644,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                     <div className="text-slate-300">
                       <p className="font-semibold flex items-center gap-1.5">
-                        <span>{order.customer.fullName}</span>
+                        <span>{order.customer?.fullName || (order as any).customerName || 'Customer'}</span>
                         <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-slate-800 text-amber-300 border border-slate-700/80 font-mono">Guest</span>
                       </p>
-                      <p className="text-[11px] text-slate-400">{order.customer.phone}</p>
+                      <p className="text-[11px] text-slate-400">{order.customer?.phone || (order as any).customerPhone || ''}</p>
                     </div>
 
                     <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
@@ -724,13 +724,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     {/* Customer Info */}
                     <div>
                       <p className="font-bold text-white mb-1 flex items-center gap-2">
-                        <span>{order.customer.fullName}</span>
+                        <span>{order.customer?.fullName || (order as any).customerName || 'Customer'}</span>
                         <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono">Guest Order</span>
                       </p>
-                      <p className="text-slate-400">{order.customer.email}</p>
-                      <p className="text-slate-400">{order.customer.phone}</p>
+                      <p className="text-slate-400">{order.customer?.email || (order as any).customerEmail || 'orders@instaprintkolkata.com'}</p>
+                      <p className="text-slate-400">{order.customer?.phone || (order as any).customerPhone || ''}</p>
                       <p className="text-amber-400 font-medium mt-1">
-                        {order.customer.deliveryMethod === 'store-pickup' ? 'Counter Pickup (Shop 106/B)' : 'Express Courier Delivery'}
+                        {order.customer?.deliveryMethod === 'store-pickup' ? 'Counter Pickup (Shop 106/B)' : 'Express Courier Delivery'}
                       </p>
                     </div>
 
@@ -1181,7 +1181,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
 
                   <p className="font-semibold text-slate-300 flex items-center gap-1.5">
-                    <span>{ord.customer.fullName}</span>
+                    <span>{ord.customer?.fullName || (ord as any).customerName || 'Customer'}</span>
                     <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-slate-800 text-amber-300 font-mono">Guest</span>
                   </p>
 
@@ -1410,7 +1410,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
             <div>
               <h3 className="text-xl font-bold text-white">Artwork Files for {selectedArtworkOrder.orderId}</h3>
-              <p className="text-xs text-slate-400">Customer: {selectedArtworkOrder.customer.fullName} ({selectedArtworkOrder.customer.phone})</p>
+              <p className="text-xs text-slate-400">Customer: {selectedArtworkOrder.customer?.fullName || 'Customer'} ({selectedArtworkOrder.customer?.phone || ''})</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

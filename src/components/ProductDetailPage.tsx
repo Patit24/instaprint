@@ -88,11 +88,27 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   // Live on-page order tracking states
   const [trackedOrderInput, setTrackedOrderInput] = useState('');
   const [trackedOrder, setTrackedOrder] = useState<OrderRecord | null>(() => {
-    if (orders && orders.length > 0) return orders[0];
-    try {
-      const savedOrders: OrderRecord[] = JSON.parse(localStorage.getItem('instaprint_orders') || '[]');
-      if (savedOrders.length > 0) return savedOrders[0];
-    } catch {}
+    const raw: any = (orders && orders.length > 0) ? orders[0] : (() => {
+      try {
+        const savedOrders = JSON.parse(localStorage.getItem('instaprint_orders') || '[]');
+        return savedOrders.length > 0 ? savedOrders[0] : null;
+      } catch {
+        return null;
+      }
+    })();
+    if (raw) {
+      return {
+        ...raw,
+        customer: raw.customer || {
+          fullName: raw.customerName || 'Customer',
+          phone: raw.customerPhone || '082406 38595',
+          email: raw.customerEmail || 'customer@instaprint.com',
+          deliveryMethod: raw.deliveryMethod || 'store-pickup',
+          city: 'Kolkata',
+          pincode: '700036'
+        }
+      };
+    }
     return null;
   });
   const [trackedError, setTrackedError] = useState<string | null>(null);
@@ -132,8 +148,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
     const match = allOrders.find(
       o => o.orderId.toUpperCase() === query ||
-           o.trackingNumber.toUpperCase() === query ||
-           o.customer.phone.includes(query)
+           (o.trackingNumber && o.trackingNumber.toUpperCase() === query) ||
+           (o.customer?.phone && o.customer.phone.includes(query))
     );
 
     if (match) {
