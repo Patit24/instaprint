@@ -53,12 +53,15 @@ if (typeof window !== "undefined") {
 }
 
 /**
- * Checks if a product has an actual image uploaded by admin
+ * Checks if a product has an actual real photo uploaded by studio admin
+ * Demo Unsplash images and placeholders are rejected to ensure only real admin photos activate buying
  */
 export const hasProductImage = (product?: Product | null): boolean => {
   if (!product || !product.image) return false;
   const img = product.image.trim();
-  if (img === '' || img === '#' || img.includes('placeholder-empty')) return false;
+  if (img === '' || img === '#' || img.includes('placeholder-empty') || img.includes('unsplash.com')) {
+    return false;
+  }
   return true;
 };
 

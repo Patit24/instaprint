@@ -199,7 +199,9 @@ export const App: React.FC = () => {
     // 1. Load permanent products from master database
     dbGetAllProducts().then(storedProducts => {
       if (storedProducts && storedProducts.length > 0) {
-        setProducts(storedProducts);
+        setProducts(storedProducts.map(p => 
+          p.image?.includes('unsplash.com') ? { ...p, image: '', gallery: [] } : p
+        ));
       }
     });
 
@@ -227,8 +229,14 @@ export const App: React.FC = () => {
           setProducts((prev) => {
             const productMap = new Map<string, Product>();
             SAMPLE_PRODUCTS.forEach(p => productMap.set(p.id, p));
-            prev.forEach(p => productMap.set(p.id, p));
-            firestoreProducts.forEach(p => productMap.set(p.id, p));
+            prev.forEach(p => {
+              const clean = p.image?.includes('unsplash.com') ? { ...p, image: '', gallery: [] } : p;
+              productMap.set(p.id, clean);
+            });
+            firestoreProducts.forEach(p => {
+              const clean = p.image?.includes('unsplash.com') ? { ...p, image: '', gallery: [] } : p;
+              productMap.set(p.id, clean);
+            });
             return Array.from(productMap.values());
           });
         }

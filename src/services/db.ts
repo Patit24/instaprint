@@ -157,16 +157,21 @@ export const dbGetAllProducts = async (): Promise<Product[]> => {
 
     localProducts.forEach(localProd => {
       const sample = productMap.get(localProd.id);
-      // If local product has a non-empty custom image (e.g. admin uploaded base64 or custom URL)
-      const hasCustomImage = localProd.image && localProd.image.trim() !== '' && !localProd.image.includes('placeholder-empty');
-      const effectiveImage = hasCustomImage ? localProd.image : (sample?.image || localProd.image);
+      // If local product has a real custom image uploaded by admin (e.g. base64 data URL or Firebase Storage URL)
+      const isDemoImage = !localProd.image || localProd.image.includes('unsplash.com') || localProd.image.includes('placeholder-empty');
+      const hasCustomImage = !isDemoImage && localProd.image.trim() !== '' && localProd.image.trim() !== '#';
+      const effectiveImage = hasCustomImage ? localProd.image : '';
+      const effectiveGallery = hasCustomImage && localProd.gallery 
+        ? localProd.gallery.filter(g => g && !g.includes('unsplash.com'))
+        : [];
 
-      productMap.set(localProd.id, {
+      const cleanProduct = {
         ...(sample || {}),
         ...localProd,
         image: effectiveImage,
-        gallery: (localProd.gallery && localProd.gallery.length > 0) ? localProd.gallery : (sample?.gallery || [effectiveImage])
-      });
+        gallery: effectiveGallery
+      };
+      productMap.set(localProd.id, cleanProduct);
     });
 
     return Array.from(productMap.values());

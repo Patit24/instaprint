@@ -1143,7 +1143,8 @@ export const getCuratedProductImage = (name: string, category: ProductCategory, 
   return 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80';
 };
 
-// Generate all products with curated commercial studio photography for all items in the mega menu
+// Generate all products with empty initial images per studio policy
+// Products start with NO demo images; they unlock for online purchase once admin uploads real photography
 export const GENERATED_EMPTY_IMAGE_PRODUCTS: Product[] = (() => {
   const products: Product[] = [];
   const seenIds = new Set<string>();
@@ -1161,7 +1162,6 @@ export const GENERATED_EMPTY_IMAGE_PRODUCTS: Product[] = (() => {
         seenIds.add(id);
 
         const pricing = getSuggestedPrice(item.name, item.category);
-        const initialImage = getCuratedProductImage(item.name, item.category, item.subCategory);
 
         products.push({
           id,
@@ -1181,8 +1181,8 @@ export const GENERATED_EMPTY_IMAGE_PRODUCTS: Product[] = (() => {
           tag: item.isNew ? 'New Addition' : 'Popular Choice',
           shortDescription: `${item.name} custom crafted with precision at Instaprint Baranagar Studio.`,
           description: `Custom ${item.name} for business and personal branding. High-definition commercial printing with rich color reproduction and durable premium materials. Ready for fast store pickup or courier delivery.`,
-          image: initialImage,
-          gallery: [initialImage],
+          image: '',
+          gallery: [],
           turnaround: '24-48 Hours Express Dispatch',
           materials: 'Archival Cast Media & Premium Stock',
           features: [
