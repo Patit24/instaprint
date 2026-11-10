@@ -161,9 +161,10 @@ export const App: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Checkout discount
+  // Checkout discount & Direct Buy Now Item
   const [checkoutDiscount, setCheckoutDiscount] = useState(0);
   const [appliedCouponCode, setAppliedCouponCode] = useState('');
+  const [directCheckoutItem, setDirectCheckoutItem] = useState<CartItem | null>(null);
 
   // Persist states
   useEffect(() => {
@@ -327,6 +328,7 @@ export const App: React.FC = () => {
   };
 
   const handleProceedToCheckout = (discount: number, coupon: string) => {
+    setDirectCheckoutItem(null); // Full cart checkout
     setCheckoutDiscount(discount);
     setAppliedCouponCode(coupon);
     setIsCartOpen(false);
@@ -334,14 +336,21 @@ export const App: React.FC = () => {
   };
 
   const handleDirectCheckout = (item: CartItem) => {
-    setCart(prev => [item, ...prev.filter(i => i.id !== item.id)]);
+    setDirectCheckoutItem(item); // Buy Now for ONLY this specific item!
+    setCheckoutDiscount(0);
+    setAppliedCouponCode('');
     setIsCheckoutOpen(true);
   };
 
   const handleOrderSuccess = (newOrder: OrderRecord) => {
     setOrders(prev => [newOrder, ...prev]);
     dbSaveOrder(newOrder);
-    setCart([]);
+    if (directCheckoutItem) {
+      setCart(prev => prev.filter(i => i.productId !== directCheckoutItem.productId));
+      setDirectCheckoutItem(null);
+    } else {
+      setCart([]);
+    }
     setIsCheckoutOpen(false);
   };
 
@@ -661,13 +670,17 @@ export const App: React.FC = () => {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onProceedToCheckout={handleProceedToCheckout}
+        onClearCart={() => setCart([])}
       />
 
       {/* Checkout Modal */}
       <CheckoutModal
         isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
-        cart={cart}
+        onClose={() => {
+          setIsCheckoutOpen(false);
+          setDirectCheckoutItem(null);
+        }}
+        cart={directCheckoutItem ? [directCheckoutItem] : cart}
         discount={checkoutDiscount}
         couponCode={appliedCouponCode}
         onOrderSuccess={handleOrderSuccess}

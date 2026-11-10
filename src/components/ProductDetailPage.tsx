@@ -66,7 +66,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [activeImage, setActiveImage] = useState(product.image);
   const [selectedSize, setSelectedSize] = useState(product.sizes?.[0]?.label || '');
   const [selectedFinish, setSelectedFinish] = useState(product.finishes?.[0]?.label || '');
-  const [quantity, setQuantity] = useState(product.minQuantity && product.minQuantity > 1 ? product.minQuantity : 1);
+  const [quantity, setQuantity] = useState(product.minQuantity ? product.minQuantity : 1);
   const [addedSuccess, setAddedSuccess] = useState(false);
 
   // Logo / Photo customization upload states
@@ -254,7 +254,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     setActiveImage(allImages[0] || product.image);
     setSelectedSize(product.sizes?.[0]?.label || '');
     setSelectedFinish(product.finishes?.[0]?.label || '');
-    setQuantity(product.minQuantity && product.minQuantity > 1 ? product.minQuantity : 1);
+    setQuantity(product.minQuantity ? product.minQuantity : 1);
     setCustomLogo(null);
     setCustomLogoName('');
     setCustomText('');
@@ -311,13 +311,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   // Quantity pill tiers options
   const quantityTiers = useMemo(() => {
     let quantities: number[] = [];
+    const baseMin = product.minQuantity ? product.minQuantity : 1;
+
     if (product.bulkTiers && product.bulkTiers.length > 0) {
-      const baseMin = product.minQuantity && product.minQuantity > 1 ? product.minQuantity : 1;
       const tierQtys = product.bulkTiers.map(t => t.minQty);
       quantities = Array.from(new Set([baseMin, ...tierQtys])).sort((a, b) => a - b);
     } else {
-      const baseMin = product.minQuantity && product.minQuantity > 1 ? product.minQuantity : 5;
-      if (baseMin === 1) {
+      if (baseMin <= 1) {
         quantities = [1, 5, 10, 25, 50, 100];
       } else {
         quantities = [baseMin, baseMin * 2, baseMin * 5, baseMin * 10, baseMin * 20];

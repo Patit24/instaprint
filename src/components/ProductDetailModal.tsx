@@ -47,7 +47,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [customInstructions, setCustomInstructions] = useState<string>('');
   
   // Set default quantity based on minQuantity
-  const [quantity, setQuantity] = useState(product.minQuantity && product.minQuantity > 1 ? 1 : 1);
+  const [quantity, setQuantity] = useState(product.minQuantity ? product.minQuantity : 1);
   const [addedSuccess, setAddedSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -76,7 +76,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     setUploadedPhotoUrl(null);
     setUploadedLogoName('');
     setCustomInstructions('');
-    setQuantity(1);
+    setQuantity(product.minQuantity ? product.minQuantity : 1);
   }, [product, allImages]);
 
   // Compute price based on size option
