@@ -44,7 +44,7 @@ export const loadRazorpayScript = (): Promise<boolean> => {
 export const createRazorpayOrder = async (
   amountInRupees: number,
   receipt?: string
-): Promise<{ order_id: string; amount: number; currency: string }> => {
+): Promise<{ order_id: string; amount: number; currency: string; key_id?: string }> => {
   const amountInPaise = Math.round(amountInRupees * 100);
 
   if (amountInPaise < 100) {
@@ -132,7 +132,7 @@ export const openRazorpayCheckout = async (options: RazorpayCheckoutParams): Pro
 
     // 2. Configure standard checkout options
     const razorpayOptions = {
-      key: RAZORPAY_KEY_ID,
+      key: orderData.key_id || RAZORPAY_KEY_ID,
       amount: orderData.amount,
       currency: orderData.currency,
       name: STORE_INFO.name,

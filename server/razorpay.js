@@ -37,6 +37,7 @@ export async function handleCreateOrder(req, res) {
       });
     }
 
+    const key_id = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY_ID;
     const razorpay = getRazorpayInstance();
     const options = {
       amount: parsedAmount,
@@ -49,7 +50,8 @@ export async function handleCreateOrder(req, res) {
     return res.status(200).json({
       order_id: order.id,
       amount: order.amount,
-      currency: order.currency
+      currency: order.currency,
+      key_id: key_id
     });
   } catch (error) {
     console.error('[Razorpay] Create order error:', error);
